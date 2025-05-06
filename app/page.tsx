@@ -499,7 +499,7 @@ const niosCourses = [
     title: "Secondary (Class 10) - Science Stream",
     description:
       "Complete secondary education with focus on science subjects including Physics, Chemistry, Biology, and Mathematics.",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/23234fs.png",
     duration: "1 Year",
   },
   {
