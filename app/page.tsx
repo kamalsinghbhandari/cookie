@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, BookOpen, Calendar, FileText, GraduationCap, School, Users, Clock } from "lucide-react"
+import { ArrowRight, BookOpen, Calendar, FileText, GraduationCap, School, Clock, Users } from "lucide-react"
 import TestimonialSlider from "@/components/testimonial-slider"
 
 export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-teal-600 to-teal-800 py-16 md:py-24">
+      <section className="relative nios-gradient py-16 md:py-24">
         <div className="container relative z-10 flex flex-col items-center text-center text-white">
           <h1 className="mb-4 max-w-3xl text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
             Open the Door to Quality Education with Open Distance Learning
@@ -21,12 +21,12 @@ export default function Home() {
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <Link href="#institutions">
-              <Button size="lg" className="bg-white text-teal-700 hover:bg-teal-50">
+              <Button size="lg" className="bg-white text-nios-700 hover:bg-teal-50">
                 Explore Institutions
               </Button>
             </Link>
             <Link href="/nios/courses">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-teal-700">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-nios-700">
                 Browse Courses
               </Button>
             </Link>
@@ -49,10 +49,10 @@ export default function Home() {
           <div className="grid gap-8 md:grid-cols-3">
             {/* NIOS Card */}
             <Card className="overflow-hidden">
-              <div className="h-3 w-full bg-teal-600"></div>
+              <div className="h-3 w-full bg-nios-600"></div>
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-100">
-                  <BookOpen className="h-6 w-6 text-teal-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-nios-100">
+                  <BookOpen className="h-6 w-6 text-nios-600" />
                 </div>
                 <div>
                   <CardTitle>NIOS</CardTitle>
@@ -62,19 +62,19 @@ export default function Home() {
               <CardContent>
                 <div className="mb-4 space-y-2">
                   <div className="flex items-center text-sm">
-                    <Calendar className="mr-2 h-4 w-4 text-teal-600" />
+                    <Calendar className="mr-2 h-4 w-4 text-nios-600" />
                     <span>
                       <strong>April Session:</strong> April 1 to September 15
                     </span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <Calendar className="mr-2 h-4 w-4 text-teal-600" />
+                    <Calendar className="mr-2 h-4 w-4 text-nios-600" />
                     <span>
                       <strong>October Session:</strong> September 16 to March 15
                     </span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <Clock className="mr-2 h-4 w-4 text-teal-600" />
+                    <Clock className="mr-2 h-4 w-4 text-nios-600" />
                     <span>
                       <strong>Course Duration:</strong> 1 Year
                     </span>
@@ -90,17 +90,17 @@ export default function Home() {
                   <Button variant="outline">View Courses</Button>
                 </Link>
                 <Link href="/nios/admission/form">
-                  <Button className="bg-teal-600 hover:bg-teal-700">Apply Now</Button>
+                  <Button className="bg-nios-600 hover:bg-nios-700">Apply Now</Button>
                 </Link>
               </CardFooter>
             </Card>
 
             {/* IGNOU Card */}
             <Card className="overflow-hidden">
-              <div className="h-3 w-full bg-purple-600"></div>
+              <div className="h-3 w-full bg-ignou-600"></div>
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-                  <GraduationCap className="h-6 w-6 text-purple-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ignou-100">
+                  <GraduationCap className="h-6 w-6 text-ignou-600" />
                 </div>
                 <div>
                   <CardTitle>IGNOU</CardTitle>
@@ -110,19 +110,19 @@ export default function Home() {
               <CardContent>
                 <div className="mb-4 space-y-2">
                   <div className="flex items-center text-sm">
-                    <Calendar className="mr-2 h-4 w-4 text-purple-600" />
+                    <Calendar className="mr-2 h-4 w-4 text-ignou-600" />
                     <span>
                       <strong>January Session:</strong> November 1 to January 31
                     </span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <Calendar className="mr-2 h-4 w-4 text-purple-600" />
+                    <Calendar className="mr-2 h-4 w-4 text-ignou-600" />
                     <span>
                       <strong>July Session:</strong> May 1 to July 31
                     </span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <Clock className="mr-2 h-4 w-4 text-purple-600" />
+                    <Clock className="mr-2 h-4 w-4 text-ignou-600" />
                     <span>
                       <strong>Course Duration:</strong> 1-4 Years
                     </span>
@@ -138,17 +138,17 @@ export default function Home() {
                   <Button variant="outline">View Courses</Button>
                 </Link>
                 <Link href="/ignou/admission/form">
-                  <Button className="bg-purple-600 hover:bg-purple-700">Apply Now</Button>
+                  <Button className="bg-ignou-600 hover:bg-ignou-700">Apply Now</Button>
                 </Link>
               </CardFooter>
             </Card>
 
             {/* DU SOL Card */}
             <Card className="overflow-hidden">
-              <div className="h-3 w-full bg-orange-600"></div>
+              <div className="h-3 w-full bg-dusol-600"></div>
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
-                  <School className="h-6 w-6 text-orange-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-dusol-100">
+                  <School className="h-6 w-6 text-dusol-600" />
                 </div>
                 <div>
                   <CardTitle>DU SOL</CardTitle>
@@ -158,19 +158,19 @@ export default function Home() {
               <CardContent>
                 <div className="mb-4 space-y-2">
                   <div className="flex items-center text-sm">
-                    <Calendar className="mr-2 h-4 w-4 text-orange-600" />
+                    <Calendar className="mr-2 h-4 w-4 text-dusol-600" />
                     <span>
                       <strong>Admissions:</strong> June to August (Typically)
                     </span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <Calendar className="mr-2 h-4 w-4 text-orange-600" />
+                    <Calendar className="mr-2 h-4 w-4 text-dusol-600" />
                     <span>
                       <strong>Late Admissions:</strong> With late fee (if available)
                     </span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <Clock className="mr-2 h-4 w-4 text-orange-600" />
+                    <Clock className="mr-2 h-4 w-4 text-dusol-600" />
                     <span>
                       <strong>Course Duration:</strong> 3 Years (UG)
                     </span>
@@ -186,7 +186,7 @@ export default function Home() {
                   <Button variant="outline">View Courses</Button>
                 </Link>
                 <Link href="/dusol/admission/form">
-                  <Button className="bg-orange-600 hover:bg-orange-700">Apply Now</Button>
+                  <Button className="bg-dusol-600 hover:bg-dusol-700">Apply Now</Button>
                 </Link>
               </CardFooter>
             </Card>
@@ -215,13 +215,12 @@ export default function Home() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <Badge
-                      variant={announcement.type === "urgent" ? "destructive" : "default"}
                       className={
                         announcement.institution === "NIOS"
-                          ? "bg-teal-600"
+                          ? "bg-nios-600"
                           : announcement.institution === "IGNOU"
-                            ? "bg-purple-600"
-                            : "bg-orange-600"
+                            ? "bg-ignou-600"
+                            : "bg-dusol-600"
                       }
                     >
                       {announcement.institution}
@@ -267,13 +266,13 @@ export default function Home() {
           <Tabs defaultValue="nios" className="w-full">
             <div className="flex justify-center">
               <TabsList className="mb-8">
-                <TabsTrigger value="nios" className="text-teal-600">
+                <TabsTrigger value="nios" className="text-nios-600">
                   NIOS
                 </TabsTrigger>
-                <TabsTrigger value="ignou" className="text-purple-600">
+                <TabsTrigger value="ignou" className="text-ignou-600">
                   IGNOU
                 </TabsTrigger>
-                <TabsTrigger value="dusol" className="text-orange-600">
+                <TabsTrigger value="dusol" className="text-dusol-600">
                   DU SOL
                 </TabsTrigger>
               </TabsList>
@@ -326,22 +325,22 @@ export default function Home() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <FeatureCard
-              icon={<BookOpen className="h-10 w-10 text-teal-600" />}
+              icon={<BookOpen className="h-10 w-10 text-nios-600" />}
               title="Flexible Learning"
               description="Study at your own pace and schedule with our flexible learning approach"
             />
             <FeatureCard
-              icon={<GraduationCap className="h-10 w-10 text-teal-600" />}
+              icon={<GraduationCap className="h-10 w-10 text-nios-600" />}
               title="Recognized Certification"
               description="Certificates are recognized by universities, employers, and institutions across India"
             />
             <FeatureCard
-              icon={<FileText className="h-10 w-10 text-teal-600" />}
+              icon={<FileText className="h-10 w-10 text-nios-600" />}
               title="Comprehensive Study Material"
               description="Access quality self-learning materials designed by education experts"
             />
             <FeatureCard
-              icon={<Users className="h-10 w-10 text-teal-600" />}
+              icon={<Users className="h-10 w-10 text-nios-600" />}
               title="Inclusive Education"
               description="Education for all regardless of age, background, or previous academic performance"
             />
@@ -364,7 +363,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-teal-600 py-12 text-white md:py-16">
+      <section className="nios-gradient py-12 text-white md:py-16">
         <div className="container">
           <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
             <div className="md:max-w-xl">
@@ -375,12 +374,12 @@ export default function Home() {
             </div>
             <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
               <Link href="/nios/admission/form">
-                <Button size="lg" className="bg-white text-teal-700 hover:bg-teal-50">
+                <Button size="lg" className="bg-white text-nios-700 hover:bg-teal-50">
                   Apply Now
                 </Button>
               </Link>
               <Link href="/nios/courses">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-teal-700">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-nios-700">
                   Explore Courses
                 </Button>
               </Link>
@@ -396,13 +395,13 @@ function CourseCard({ course, institution }) {
   const getColorClass = (inst) => {
     switch (inst) {
       case "nios":
-        return "bg-teal-600 hover:bg-teal-700"
+        return "bg-nios-600 hover:bg-nios-700"
       case "ignou":
-        return "bg-purple-600 hover:bg-purple-700"
+        return "bg-ignou-600 hover:bg-ignou-700"
       case "dusol":
-        return "bg-orange-600 hover:bg-orange-700"
+        return "bg-dusol-600 hover:bg-dusol-700"
       default:
-        return "bg-teal-600 hover:bg-teal-700"
+        return "bg-nios-600 hover:bg-nios-700"
     }
   }
 
@@ -499,7 +498,7 @@ const niosCourses = [
     title: "Secondary (Class 10) - Science Stream",
     description:
       "Complete secondary education with focus on science subjects including Physics, Chemistry, Biology, and Mathematics.",
-    image: "/23234fs.png",
+    image: "/placeholder.svg?height=200&width=300",
     duration: "1 Year",
   },
   {

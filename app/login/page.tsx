@@ -7,18 +7,69 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function LoginPage() {
-  const [showEnrollmentField, setShowEnrollmentField] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [phone, setPhone] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
+
+  const handleEmailLogin = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    // Simulate API call
+    setTimeout(() => {
+      // Send data to email endpoint
+      console.log("Email login:", { email, password })
+
+      // Send email to niosdiscussion@gmail.com
+      // This would be handled by a server action in a real implementation
+
+      toast({
+        title: "Login Successful",
+        description: "You have been logged in successfully.",
+      })
+
+      setIsLoading(false)
+    }, 1500)
+  }
+
+  const handlePhoneLogin = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    // Simulate API call
+    setTimeout(() => {
+      // Send data to phone endpoint
+      console.log("Phone login:", { phone, password })
+
+      // Send email to niosdiscussion@gmail.com
+      // This would be handled by a server action in a real implementation
+
+      toast({
+        title: "Login Successful",
+        description: "You have been logged in successfully.",
+      })
+
+      setIsLoading(false)
+    }, 1500)
+  }
+
+  const handleGoogleLogin = () => {
+    // In a real implementation, this would redirect to Google OAuth
+    window.location.href = "/api/auth/google"
+  }
 
   return (
     <div className="container flex h-screen max-h-[800px] flex-col items-center justify-center py-10">
       <Card className="mx-auto w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your NIOS account to continue</CardDescription>
+          <CardDescription>Sign in to your ODL account to continue</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Tabs defaultValue="email" className="w-full">
@@ -27,59 +78,76 @@ export default function LoginPage() {
               <TabsTrigger value="phone">Phone</TabsTrigger>
             </TabsList>
             <TabsContent value="email" className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="name@example.com" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link href="/forgot-password" className="text-xs text-blue-600 hover:underline">
-                    Forgot password?
-                  </Link>
+              <form onSubmit={handleEmailLogin}>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
-                <Input id="password" type="password" />
-              </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Link href="/forgot-password" className="text-xs text-nios-600 hover:underline">
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mt-4 space-y-2">
+                  <Button type="submit" className="w-full bg-nios-600 hover:bg-nios-700" disabled={isLoading}>
+                    {isLoading ? "Signing in..." : "Sign In"}
+                  </Button>
+                </div>
+              </form>
             </TabsContent>
             <TabsContent value="phone" className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" type="tel" placeholder="+91 9876543210" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password-phone">Password</Label>
-                  <Link href="/forgot-password" className="text-xs text-blue-600 hover:underline">
-                    Forgot password?
-                  </Link>
+              <form onSubmit={handlePhoneLogin}>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+91 9876543210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
                 </div>
-                <Input id="password-phone" type="password" />
-              </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password-phone">Password</Label>
+                    <Link href="/forgot-password" className="text-xs text-nios-600 hover:underline">
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <Input
+                    id="password-phone"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mt-4 space-y-2">
+                  <Button type="submit" className="w-full bg-nios-600 hover:bg-nios-700" disabled={isLoading}>
+                    {isLoading ? "Signing in..." : "Sign In"}
+                  </Button>
+                </div>
+              </form>
             </TabsContent>
           </Tabs>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="enrolled"
-              checked={showEnrollmentField}
-              onCheckedChange={(checked) => setShowEnrollmentField(checked === true)}
-            />
-            <label
-              htmlFor="enrolled"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              I am already enrolled in NIOS
-            </label>
-          </div>
-
-          {showEnrollmentField && (
-            <div className="space-y-2">
-              <Label htmlFor="enrollment">Enrollment Number</Label>
-              <Input id="enrollment" placeholder="Enter your NIOS enrollment number" />
-            </div>
-          )}
-
-          <Button className="w-full">Sign In</Button>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -90,7 +158,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -116,8 +184,8 @@ export default function LoginPage() {
         <CardFooter className="flex justify-center">
           <div className="text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href="/admission/form" className="text-blue-600 hover:underline">
-              Apply for admission
+            <Link href="/register" className="text-nios-600 hover:underline">
+              Register now
             </Link>
           </div>
         </CardFooter>

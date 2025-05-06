@@ -8,8 +8,8 @@ export default function BlogPage() {
   return (
     <div className="container py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">NIOS Blog</h1>
-        <p className="mt-2 text-muted-foreground">Articles, tips, and guides for NIOS students</p>
+        <h1 className="text-3xl font-bold">ODL Blog</h1>
+        <p className="mt-2 text-muted-foreground">Articles, tips, and guides for open distance learning students</p>
       </div>
 
       {/* Featured Post */}
@@ -19,7 +19,7 @@ export default function BlogPage() {
             <div className="order-2 md:order-1">
               <CardHeader>
                 <div className="mb-2 flex items-center gap-2">
-                  <Badge>Featured</Badge>
+                  <Badge className="bg-nios-600">Featured</Badge>
                   <span className="text-sm text-muted-foreground">
                     <Calendar className="mr-1 inline-block h-4 w-4" />
                     May 1, 2025
@@ -46,7 +46,7 @@ export default function BlogPage() {
               </CardContent>
               <CardFooter>
                 <Link href="/blog/how-to-prepare-for-nios-examinations">
-                  <Button>
+                  <Button className="bg-nios-600 hover:bg-nios-700">
                     Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -121,7 +121,7 @@ export default function BlogPage() {
           {categories.map((category, index) => (
             <Link key={index} href={`/blog/category/${category.slug}`}>
               <div className="flex flex-col items-center rounded-lg p-4 text-center transition-colors hover:bg-slate-50">
-                <div className="mb-2 rounded-full bg-blue-100 p-3 text-blue-600">{category.icon}</div>
+                <div className="mb-2 rounded-full bg-nios-100 p-3 text-nios-600">{category.icon}</div>
                 <h3 className="text-sm font-medium">{category.name}</h3>
                 <p className="mt-1 text-xs text-muted-foreground">{category.count} articles</p>
               </div>
@@ -147,30 +147,31 @@ const blogPosts = [
     slug: "study-habits-successful-students",
   },
   {
-    title: "Understanding the NIOS Credit Transfer System",
+    title: "Understanding the IGNOU Credit Transfer System",
     excerpt:
-      "A comprehensive guide to the NIOS credit transfer system and how you can use it to your advantage when transitioning from other boards.",
+      "A comprehensive guide to the IGNOU credit transfer system and how you can use it to your advantage when transitioning from other universities.",
     image: "/placeholder.svg?height=200&width=300",
     date: "April 22, 2025",
     author: "Amit Kumar",
     readTime: "5 min",
-    category: "Admissions",
-    slug: "understanding-credit-transfer",
+    category: "IGNOU",
+    slug: "understanding-ignou-credit-transfer",
   },
   {
-    title: "Career Options After NIOS: What You Need to Know",
+    title: "Career Options After DU SOL: What You Need to Know",
     excerpt:
-      "Explore the various career paths and higher education opportunities available to NIOS graduates in India and abroad.",
+      "Explore the various career paths and higher education opportunities available to DU SOL graduates in India and abroad.",
     image: "/placeholder.svg?height=200&width=300",
     date: "April 15, 2025",
     author: "Dr. Neha Gupta",
     readTime: "8 min",
     category: "Career Guidance",
-    slug: "career-options-after-nios",
+    slug: "career-options-after-dusol",
   },
   {
-    title: "How to Balance Work and Studies as an NIOS Student",
-    excerpt: "Practical tips and strategies for working professionals who are pursuing their education through NIOS.",
+    title: "How to Balance Work and Studies as an ODL Student",
+    excerpt:
+      "Practical tips and strategies for working professionals who are pursuing their education through distance learning.",
     image: "/placeholder.svg?height=200&width=300",
     date: "April 10, 2025",
     author: "Rajiv Mehta",
@@ -179,15 +180,15 @@ const blogPosts = [
     slug: "balance-work-and-studies",
   },
   {
-    title: "NIOS vs. Regular Schooling: Making the Right Choice",
+    title: "NIOS vs. IGNOU vs. DU SOL: Making the Right Choice",
     excerpt:
-      "A comparative analysis of NIOS and regular schooling to help you decide which option is better suited for your educational needs.",
+      "A comparative analysis of the three major distance education institutions to help you decide which option is better suited for your educational needs.",
     image: "/placeholder.svg?height=200&width=300",
     date: "April 5, 2025",
     author: "Sunita Patel",
     readTime: "9 min",
     category: "Education",
-    slug: "nios-vs-regular-schooling",
+    slug: "comparing-distance-education-options",
   },
   {
     title: "Mastering Mathematics: Tips for NIOS Students",
@@ -210,28 +211,28 @@ const categories = [
     icon: <BookIcon className="h-5 w-5" />,
   },
   {
-    name: "Admissions",
+    name: "NIOS",
     count: 18,
-    slug: "admissions",
+    slug: "nios",
     icon: <FileTextIcon className="h-5 w-5" />,
   },
   {
-    name: "Examinations",
+    name: "IGNOU",
     count: 15,
-    slug: "examinations",
-    icon: <ClipboardIcon className="h-5 w-5" />,
+    slug: "ignou",
+    icon: <GraduationCapIcon className="h-5 w-5" />,
+  },
+  {
+    name: "DU SOL",
+    count: 12,
+    slug: "dusol",
+    icon: <SchoolIcon className="h-5 w-5" />,
   },
   {
     name: "Career Guidance",
-    count: 12,
+    count: 20,
     slug: "career-guidance",
     icon: <CompassIcon className="h-5 w-5" />,
-  },
-  {
-    name: "Subject Guides",
-    count: 20,
-    slug: "subject-guides",
-    icon: <GraduationCapIcon className="h-5 w-5" />,
   },
   {
     name: "Success Stories",
@@ -284,7 +285,7 @@ function FileTextIcon(props) {
   )
 }
 
-function ClipboardIcon(props) {
+function GraduationCapIcon(props) {
   return (
     <svg
       {...props}
@@ -298,8 +299,32 @@ function ClipboardIcon(props) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+      <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+    </svg>
+  )
+}
+
+function SchoolIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m4 6 8-4 8 4" />
+      <path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2" />
+      <path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4" />
+      <path d="M18 5v17" />
+      <path d="M6 5v17" />
+      <circle cx="12" cy="9" r="2" />
     </svg>
   )
 }
@@ -320,26 +345,6 @@ function CompassIcon(props) {
     >
       <circle cx="12" cy="12" r="10" />
       <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-    </svg>
-  )
-}
-
-function GraduationCapIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-      <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
     </svg>
   )
 }

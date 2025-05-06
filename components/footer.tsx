@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from "lucide-react"
+import { Facebook, Twitter, Instagram, Mail, MapPin } from "lucide-react"
 
 export default function Footer() {
   return (
@@ -12,21 +12,17 @@ export default function Footer() {
               Providing flexible and accessible education for all through NIOS, IGNOU, and DU SOL.
             </p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-slate-300 hover:text-white">
+              <Link href="https://facebook.com/opendistancelearning" className="text-slate-300 hover:text-white">
                 <Facebook size={20} />
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="text-slate-300 hover:text-white">
+              <Link href="https://twitter.com/niosdiscussion" className="text-slate-300 hover:text-white">
                 <Twitter size={20} />
                 <span className="sr-only">Twitter</span>
               </Link>
-              <Link href="#" className="text-slate-300 hover:text-white">
+              <Link href="https://instagram.com/odlearning" className="text-slate-300 hover:text-white">
                 <Instagram size={20} />
                 <span className="sr-only">Instagram</span>
-              </Link>
-              <Link href="#" className="text-slate-300 hover:text-white">
-                <Youtube size={20} />
-                <span className="sr-only">YouTube</span>
               </Link>
             </div>
           </div>
@@ -58,53 +54,49 @@ export default function Footer() {
                   Blog
                 </Link>
               </li>
-              <li>
-                <Link href="/store" className="hover:text-white hover:underline">
-                  Store
-                </Link>
-              </li>
             </ul>
           </div>
           <div>
             <h3 className="mb-4 text-lg font-bold">Resources</h3>
             <ul className="space-y-2 text-slate-300">
               <li>
-                <Link href="#" className="hover:text-white hover:underline">
-                  Study Materials
+                <Link href="/nios/study-material" className="hover:text-white hover:underline">
+                  NIOS Study Materials
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white hover:underline">
+                <Link href="/ignou/study-material" className="hover:text-white hover:underline">
+                  IGNOU Study Materials
+                </Link>
+              </li>
+              <li>
+                <Link href="/dusol/study-material" className="hover:text-white hover:underline">
+                  DU SOL Study Materials
+                </Link>
+              </li>
+              <li>
+                <Link href="/nios/previous-papers" className="hover:text-white hover:underline">
                   Previous Year Papers
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white hover:underline">
+                <Link href="/nios/syllabus" className="hover:text-white hover:underline">
                   Syllabus
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white hover:underline">
+                <Link href="/nios/results" className="hover:text-white hover:underline">
                   Results
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-white hover:underline">
-                  FAQs
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="mb-4 text-lg font-bold">Contact Us</h3>
+            <h3 className="mb-4 text-lg font-bold">Connect With Us</h3>
             <ul className="space-y-3 text-slate-300">
               <li className="flex items-start">
                 <MapPin className="mr-2 h-5 w-5 shrink-0" />
                 <span>Dwarka Mor, Delhi</span>
-              </li>
-              <li className="flex items-center">
-                <Phone className="mr-2 h-5 w-5" />
-                <span>1800-180-9393</span>
               </li>
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5" />
@@ -112,11 +104,40 @@ export default function Footer() {
                   niosdiscussion@gmail.com
                 </a>
               </li>
+              <li>
+                <Link href="https://t.me/opendistancelearning" className="hover:text-white hover:underline">
+                  Telegram Channel
+                </Link>
+              </li>
+              <li>
+                <Link href="https://t.me/odldiscussion" className="hover:text-white hover:underline">
+                  Telegram Group
+                </Link>
+              </li>
+              <li>
+                <Link href="https://t.me/opendistancelearningbot" className="hover:text-white hover:underline">
+                  Telegram Bot
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
         <div className="mt-8 border-t border-slate-800 pt-8 text-center text-sm text-slate-400">
-          <p>© {new Date().getFullYear()} Open Distance Learning. All rights reserved.</p>
+          <p>© 2025 Open Distance Learning. All rights reserved.</p>
+          <div className="mt-4 flex justify-center space-x-4 text-xs">
+            <Link href="/privacy-policy" className="hover:text-white hover:underline">
+              Privacy Policy
+            </Link>
+            <Link href="/refund-policy" className="hover:text-white hover:underline">
+              Refund Policy
+            </Link>
+            <Link href="/copyright-policy" className="hover:text-white hover:underline">
+              Copyright Policy
+            </Link>
+            <Link href="/terms-of-use" className="hover:text-white hover:underline">
+              Terms of Use
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

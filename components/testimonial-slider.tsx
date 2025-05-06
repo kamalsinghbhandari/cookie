@@ -12,31 +12,31 @@ export default function TestimonialSlider() {
   const testimonials = [
     {
       name: "Priya Sharma",
-      role: "Class 12 Graduate",
+      role: "NIOS Class 12 Graduate",
       image: "/placeholder.svg?height=100&width=100",
       quote:
         "NIOS gave me the flexibility to continue my education while pursuing my passion for classical dance. The study materials were comprehensive and easy to understand.",
     },
     {
       name: "Rahul Verma",
-      role: "Class 10 Student",
+      role: "IGNOU BCA Student",
       image: "/placeholder.svg?height=100&width=100",
       quote:
-        "After struggling in traditional schooling, NIOS was a breath of fresh air. I could learn at my own pace and the online resources helped me understand difficult concepts better. I'm now confident about my future education.",
+        "IGNOU's BCA program has been a game-changer for me. I can work full-time and still pursue my degree. The online resources and faculty support have been exceptional.",
     },
     {
       name: "Amit Patel",
-      role: "Working Professional",
+      role: "DU SOL B.Com Graduate",
       image: "/placeholder.svg?height=100&width=100",
       quote:
-        "I had to drop out of school due to financial constraints. Years later, NIOS gave me a second chance to complete my education while working full-time. The flexible examination schedule was perfect for my situation.",
+        "DU SOL provided me with a quality education at an affordable cost. The course materials were well-structured, and the flexibility allowed me to manage my family business alongside my studies.",
     },
     {
       name: "Sneha Gupta",
-      role: "Aspiring College Student",
+      role: "NIOS to IGNOU Pathway Student",
       image: "/placeholder.svg?height=100&width=100",
       quote:
-        "The quality of education at NIOS surprised me. The study materials were on par with regular schools, and the practical approach to learning helped me develop a deeper understanding of subjects.",
+        "I completed my 12th through NIOS and then joined IGNOU for my bachelor's degree. The transition was smooth, and both institutions provided excellent support throughout my educational journey.",
     },
   ]
 
@@ -65,7 +65,7 @@ export default function TestimonialSlider() {
       <Card className="border-none shadow-sm">
         <CardContent className="p-6 md:p-10">
           <div className="flex flex-col items-center text-center">
-            <Quote className="mb-6 h-12 w-12 text-blue-500 opacity-50" />
+            <Quote className="mb-6 h-12 w-12 text-nios-500 opacity-50" />
             <p className="mb-6 text-lg md:text-xl">{testimonials[currentIndex].quote}</p>
             <div className="mb-4 h-16 w-16 overflow-hidden rounded-full">
               <img
@@ -95,7 +95,7 @@ export default function TestimonialSlider() {
             key={index}
             variant="ghost"
             size="sm"
-            className={`h-2 w-2 rounded-full p-0 ${index === currentIndex ? "bg-blue-600" : "bg-slate-300"}`}
+            className={`h-2 w-2 rounded-full p-0 ${index === currentIndex ? "bg-nios-600" : "bg-slate-300"}`}
             onClick={() => {
               setAutoplay(false)
               setCurrentIndex(index)
