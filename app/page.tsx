@@ -1,9 +1,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, BookOpen, Calendar, FileText, GraduationCap, School, Clock, Users } from "lucide-react"
+import { ArrowRight, BookOpen, Calendar, GraduationCap, School, Clock } from "lucide-react"
 import TestimonialSlider from "@/components/testimonial-slider"
 
 export default function Home() {
@@ -13,7 +12,7 @@ export default function Home() {
       <section className="relative nios-gradient py-16 md:py-24">
         <div className="container relative z-10 flex flex-col items-center text-center text-white">
           <h1 className="mb-4 max-w-3xl text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
-            Open the Door to Quality Education with Open Distance Learning
+            Open the Door to Quality Education with ODL
           </h1>
           <p className="mb-8 max-w-2xl text-lg text-teal-100">
             Flexible learning opportunities through NIOS, IGNOU, and DU SOL. Study at your own pace with nationally
@@ -48,7 +47,7 @@ export default function Home() {
 
           <div className="grid gap-8 md:grid-cols-3">
             {/* NIOS Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl">
               <div className="h-3 w-full bg-nios-600"></div>
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-nios-100">
@@ -96,7 +95,7 @@ export default function Home() {
             </Card>
 
             {/* IGNOU Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl">
               <div className="h-3 w-full bg-ignou-600"></div>
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ignou-100">
@@ -144,7 +143,7 @@ export default function Home() {
             </Card>
 
             {/* DU SOL Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl">
               <div className="h-3 w-full bg-dusol-600"></div>
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-dusol-100">
@@ -190,65 +189,6 @@ export default function Home() {
                 </Link>
               </CardFooter>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Announcements Section */}
-      <section className="bg-slate-50 py-12 md:py-16">
-        <div className="container">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold sm:text-3xl">Latest Announcements</h2>
-              <p className="text-muted-foreground">Stay updated with important information</p>
-            </div>
-            <Link href="/nios/admission/announcements">
-              <Button variant="outline" className="hidden sm:flex">
-                View All <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {announcements.map((announcement, index) => (
-              <Card key={index} className="overflow-hidden">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <Badge
-                      className={
-                        announcement.institution === "NIOS"
-                          ? "bg-nios-600"
-                          : announcement.institution === "IGNOU"
-                            ? "bg-ignou-600"
-                            : "bg-dusol-600"
-                      }
-                    >
-                      {announcement.institution}
-                    </Badge>
-                    <span className="text-sm text-muted-foreground">{announcement.date}</span>
-                  </div>
-                  <CardTitle className="mt-2 line-clamp-2">{announcement.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="line-clamp-3 text-muted-foreground">{announcement.description}</p>
-                </CardContent>
-                <CardFooter>
-                  <Link href={announcement.link}>
-                    <Button variant="ghost" size="sm">
-                      Read More <ArrowRight className="ml-1 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-
-          <div className="mt-6 flex justify-center sm:hidden">
-            <Link href="/nios/admission/announcements">
-              <Button variant="outline">
-                View All Announcements <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
@@ -304,46 +244,11 @@ export default function Home() {
           </Tabs>
 
           <div className="mt-10 flex justify-center">
-            <Link href="/nios/courses">
+            <Link href="/courses">
               <Button>
                 View All Courses <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose ODL Section */}
-      <section className="bg-slate-50 py-12 md:py-16">
-        <div className="container">
-          <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold sm:text-3xl">Why Choose Open Distance Learning?</h2>
-            <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
-              Discover the advantages of studying through open and distance learning institutions
-            </p>
-          </div>
-
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <FeatureCard
-              icon={<BookOpen className="h-10 w-10 text-nios-600" />}
-              title="Flexible Learning"
-              description="Study at your own pace and schedule with our flexible learning approach"
-            />
-            <FeatureCard
-              icon={<GraduationCap className="h-10 w-10 text-nios-600" />}
-              title="Recognized Certification"
-              description="Certificates are recognized by universities, employers, and institutions across India"
-            />
-            <FeatureCard
-              icon={<FileText className="h-10 w-10 text-nios-600" />}
-              title="Comprehensive Study Material"
-              description="Access quality self-learning materials designed by education experts"
-            />
-            <FeatureCard
-              icon={<Users className="h-10 w-10 text-nios-600" />}
-              title="Inclusive Education"
-              description="Education for all regardless of age, background, or previous academic performance"
-            />
           </div>
         </div>
       </section>
@@ -362,6 +267,99 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQs Preview Section */}
+      <section className="bg-slate-50 py-12 md:py-16">
+        <div className="container">
+          <div className="mb-10 text-center">
+            <h2 className="text-2xl font-bold sm:text-3xl">Frequently Asked Questions</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
+              Find answers to common questions about distance education and our institutions
+            </p>
+          </div>
+
+          <div className="mx-auto max-w-3xl">
+            <Tabs defaultValue="nios" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="nios">NIOS</TabsTrigger>
+                <TabsTrigger value="ignou">IGNOU</TabsTrigger>
+                <TabsTrigger value="dusol">DU SOL</TabsTrigger>
+              </TabsList>
+              <TabsContent value="nios" className="mt-6">
+                <FaqPreview
+                  faqs={[
+                    {
+                      question: "Who can apply for NIOS?",
+                      answer:
+                        "Anyone can apply for NIOS courses without any age restriction. There is no upper age limit for admission.",
+                    },
+                    {
+                      question: "What documents are needed for NIOS admission?",
+                      answer:
+                        "You need identity proof, address proof, date of birth certificate, and previous qualification certificates.",
+                    },
+                    {
+                      question: "How much does NIOS admission cost?",
+                      answer:
+                        "NIOS admission fees vary based on course and category. Secondary courses start from ₹1,560 for SC/ST/PWD candidates.",
+                    },
+                  ]}
+                />
+              </TabsContent>
+              <TabsContent value="ignou" className="mt-6">
+                <FaqPreview
+                  faqs={[
+                    {
+                      question: "What is the course fee for IGNOU programs?",
+                      answer:
+                        "IGNOU course fees vary by program. Bachelor's programs range from ₹7,200 to ₹30,000 depending on the course.",
+                    },
+                    {
+                      question: "How do I upload documents for IGNOU admission?",
+                      answer:
+                        "Documents can be uploaded through the IGNOU admission portal in JPG, JPEG or PDF format with size less than 500KB each.",
+                    },
+                    {
+                      question: "What is the eligibility for IGNOU admission?",
+                      answer:
+                        "Eligibility varies by program. For Bachelor's programs, 12th pass is required. For Master's, a Bachelor's degree is needed.",
+                    },
+                  ]}
+                />
+              </TabsContent>
+              <TabsContent value="dusol" className="mt-6">
+                <FaqPreview
+                  faqs={[
+                    {
+                      question: "What are the eligibility criteria for DU SOL?",
+                      answer:
+                        "For undergraduate courses, candidates must have passed 12th with minimum required percentage as per DU norms.",
+                    },
+                    {
+                      question: "How do I pay DU SOL fees?",
+                      answer:
+                        "Fees can be paid online through credit card, debit card, or net banking during the admission process.",
+                    },
+                    {
+                      question: "Are DU SOL degrees recognized?",
+                      answer:
+                        "Yes, DU SOL degrees are fully recognized by UGC and have the same value as regular Delhi University degrees.",
+                    },
+                  ]}
+                />
+              </TabsContent>
+            </Tabs>
+
+            <div className="mt-8 text-center">
+              <Link href="/faqs">
+                <Button variant="outline">
+                  View All FAQs <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="nios-gradient py-12 text-white md:py-16">
         <div className="container">
@@ -373,14 +371,14 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
-              <Link href="/nios/admission/form">
+              <Link href="/register">
                 <Button size="lg" className="bg-white text-nios-700 hover:bg-teal-50">
-                  Apply Now
+                  Register Now
                 </Button>
               </Link>
-              <Link href="/nios/courses">
+              <Link href="/contact">
                 <Button size="lg" variant="outline" className="border-white text-white hover:bg-nios-700">
-                  Explore Courses
+                  Contact Us
                 </Button>
               </Link>
             </div>
@@ -408,7 +406,11 @@ function CourseCard({ course, institution }) {
   return (
     <Card className="h-full overflow-hidden transition-all hover:shadow-md">
       <div className="aspect-video w-full overflow-hidden bg-slate-100">
-        <img src={course.image || "/placeholder.svg"} alt={course.title} className="h-full w-full object-cover" />
+        <img
+          src={course.image || "/placeholder.svg?height=200&width=300"}
+          alt={course.title}
+          className="h-full w-full object-cover"
+        />
       </div>
       <CardHeader>
         <CardTitle className="line-clamp-1">{course.title}</CardTitle>
@@ -428,70 +430,20 @@ function CourseCard({ course, institution }) {
   )
 }
 
-function FeatureCard({ icon, title, description }) {
+function FaqPreview({ faqs }) {
   return (
-    <div className="flex flex-col items-center rounded-lg p-6 text-center transition-all hover:bg-white hover:shadow-sm">
-      <div className="mb-4">{icon}</div>
-      <h3 className="mb-2 text-lg font-medium">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
+    <div className="space-y-4">
+      {faqs.map((faq, index) => (
+        <div key={index} className="rounded-lg border p-4 shadow-sm">
+          <h3 className="font-medium">{faq.question}</h3>
+          <p className="mt-2 text-sm text-muted-foreground">{faq.answer}</p>
+        </div>
+      ))}
     </div>
   )
 }
 
 // Dummy data
-const announcements = [
-  {
-    title: "NIOS Admission for Academic Session 2025-26 Now Open",
-    description:
-      "Applications are now being accepted for the 2025-26 academic session. Last date to apply is September 15, 2025.",
-    date: "May 1, 2025",
-    type: "new",
-    institution: "NIOS",
-    link: "/nios/admission/announcements/2025-admissions",
-  },
-  {
-    title: "IGNOU July 2025 Admission Cycle Begins",
-    description: "IGNOU has started the admission process for the July 2025 session. Apply before July 31, 2025.",
-    date: "May 5, 2025",
-    type: "new",
-    institution: "IGNOU",
-    link: "/ignou/admission/announcements/july-2025-admissions",
-  },
-  {
-    title: "DU SOL Undergraduate Admissions 2025",
-    description:
-      "Delhi University School of Open Learning has announced admissions for undergraduate programs for 2025.",
-    date: "June 1, 2025",
-    type: "new",
-    institution: "DU SOL",
-    link: "/dusol/admission/announcements/ug-admissions-2025",
-  },
-  {
-    title: "Revised Examination Schedule for NIOS October 2025",
-    description: "The examination schedule for October 2025 has been revised. Please check the updated dates.",
-    date: "April 28, 2025",
-    type: "urgent",
-    institution: "NIOS",
-    link: "/nios/admission/announcements/revised-exam-schedule",
-  },
-  {
-    title: "IGNOU Term-End Examination Results Declared",
-    description: "Results for the December 2024 Term-End Examinations have been declared. Check your results now.",
-    date: "February 15, 2025",
-    type: "new",
-    institution: "IGNOU",
-    link: "/ignou/admission/announcements/december-2024-results",
-  },
-  {
-    title: "DU SOL Examination Form Submission Date Extended",
-    description: "The last date for examination form submission has been extended to July 15, 2025.",
-    date: "July 1, 2025",
-    type: "urgent",
-    institution: "DU SOL",
-    link: "/dusol/admission/announcements/exam-form-extension",
-  },
-]
-
 const niosCourses = [
   {
     id: "sec-001",

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Facebook, Twitter, Instagram, Mail, MapPin } from "lucide-react"
+import { Facebook, Twitter, Instagram, Mail, MapPin, Send } from "lucide-react"
 
 export default function Footer() {
   return (
@@ -35,23 +35,28 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/nios/admission/announcements" className="hover:text-white hover:underline">
+                <Link href="/nios/admission/form" className="hover:text-white hover:underline">
                   NIOS Admissions
                 </Link>
               </li>
               <li>
-                <Link href="/ignou/admission/announcements" className="hover:text-white hover:underline">
+                <Link href="/ignou/admission/form" className="hover:text-white hover:underline">
                   IGNOU Admissions
                 </Link>
               </li>
               <li>
-                <Link href="/dusol/admission/announcements" className="hover:text-white hover:underline">
+                <Link href="/dusol/admission/form" className="hover:text-white hover:underline">
                   DU SOL Admissions
                 </Link>
               </li>
               <li>
                 <Link href="/blog" className="hover:text-white hover:underline">
                   Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/faqs" className="hover:text-white hover:underline">
+                  FAQs
                 </Link>
               </li>
             </ul>
@@ -104,20 +109,23 @@ export default function Footer() {
                   niosdiscussion@gmail.com
                 </a>
               </li>
-              <li>
-                <Link href="https://t.me/opendistancelearning" className="hover:text-white hover:underline">
+              <li className="flex items-center">
+                <Send className="mr-2 h-5 w-5" />
+                <a href="https://t.me/opendistancelearning" className="hover:text-white hover:underline">
                   Telegram Channel
-                </Link>
+                </a>
               </li>
-              <li>
-                <Link href="https://t.me/odldiscussion" className="hover:text-white hover:underline">
+              <li className="flex items-center">
+                <Send className="mr-2 h-5 w-5" />
+                <a href="https://t.me/odldiscussion" className="hover:text-white hover:underline">
                   Telegram Group
-                </Link>
+                </a>
               </li>
-              <li>
-                <Link href="https://t.me/opendistancelearningbot" className="hover:text-white hover:underline">
+              <li className="flex items-center">
+                <Send className="mr-2 h-5 w-5" />
+                <a href="https://t.me/opendistancelearningbot" className="hover:text-white hover:underline">
                   Telegram Bot
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

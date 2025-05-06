@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -19,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function AdmissionFormPage() {
   const [step, setStep] = useState(1)
@@ -65,12 +65,14 @@ export default function AdmissionFormPage() {
       totalFee: 270, // 200 + 70
       lateFee: 0,
       totalSubjects: 0,
+      serviceFee: 200, // Service margin
     },
   })
 
   const [errors, setErrors] = useState({})
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [date, setDate] = useState()
+  const { toast } = useToast()
 
   useEffect(() => {
     // Calculate late fee based on current date and selected session
@@ -81,7 +83,8 @@ export default function AdmissionFormPage() {
         fees: {
           ...prev.fees,
           lateFee,
-          totalFee: prev.fees.registrationFee + prev.fees.processingFee + prev.fees.courseFee + lateFee,
+          totalFee:
+            prev.fees.registrationFee + prev.fees.processingFee + prev.fees.courseFee + lateFee + prev.fees.serviceFee,
         },
       }))
     }
@@ -187,7 +190,13 @@ export default function AdmissionFormPage() {
         courseFee,
         examFee: tocFee,
         totalSubjects,
-        totalFee: prev.fees.registrationFee + prev.fees.processingFee + courseFee + tocFee + prev.fees.lateFee,
+        totalFee:
+          prev.fees.registrationFee +
+          prev.fees.processingFee +
+          courseFee +
+          tocFee +
+          prev.fees.lateFee +
+          prev.fees.serviceFee,
       },
     }))
   }
@@ -207,7 +216,13 @@ export default function AdmissionFormPage() {
         courseFee,
         examFee: tocFee,
         totalSubjects,
-        totalFee: prev.fees.registrationFee + prev.fees.processingFee + courseFee + tocFee + prev.fees.lateFee,
+        totalFee:
+          prev.fees.registrationFee +
+          prev.fees.processingFee +
+          courseFee +
+          tocFee +
+          prev.fees.lateFee +
+          prev.fees.serviceFee,
       },
     }))
   }
@@ -293,13 +308,36 @@ export default function AdmissionFormPage() {
     window.scrollTo(0, 0)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (validateStep(step)) {
-      // In a real application, you would submit the form data to a server here
-      console.log("Form submitted:", formData)
-      setIsSubmitted(true)
-      window.scrollTo(0, 0)
+      setIsLoading(true)
+
+      try {
+        // In a real implementation, this would send the form data to a server
+        // and email the details to niosdiscussion@gmail.com
+
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+
+        console.log("Form submitted:", formData)
+
+        toast({
+          title: "Application Submitted",
+          description: "Your NIOS admission application has been submitted successfully.",
+        })
+
+        setIsSubmitted(true)
+        window.scrollTo(0, 0)
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Submission Failed",
+          description: "There was an error submitting your application. Please try again.",
+        })
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -342,10 +380,12 @@ export default function AdmissionFormPage() {
     return 0
   }
 
+  const [isLoading, setIsLoading] = useState(false)
+
   return (
     <div className="container py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-teal-700">NIOS Admission Form</h1>
+        <h1 className="text-3xl font-bold text-nios-700">NIOS Admission Form</h1>
         <p className="mt-2 text-muted-foreground">Complete the form below to apply for admission to NIOS courses</p>
       </div>
 
@@ -365,12 +405,12 @@ export default function AdmissionFormPage() {
               </span>
               <span className="text-sm text-muted-foreground">{getProgressPercentage()}% completed</span>
             </div>
-            <Progress value={getProgressPercentage()} className="mt-2" indicatorClassName="bg-teal-600" />
+            <Progress value={getProgressPercentage()} className="mt-2" />
           </div>
 
           <Card>
-            <CardHeader className="bg-teal-50">
-              <CardTitle className="text-teal-700">
+            <CardHeader className="bg-nios-50">
+              <CardTitle className="text-nios-700">
                 {step === 1
                   ? "Personal Information"
                   : step === 2
@@ -455,15 +495,15 @@ export default function AdmissionFormPage() {
                         </SelectContent>
                       </Select>
                       {formData.session && (
-                        <div className="rounded-md bg-teal-50 p-3 text-sm">
+                        <div className="rounded-md bg-nios-50 p-3 text-sm">
                           <div className="flex">
-                            <Info className="mr-2 h-4 w-4 text-teal-600" />
+                            <Info className="mr-2 h-4 w-4 text-nios-600" />
                             <div>
-                              <p className="font-medium text-teal-700">
+                              <p className="font-medium text-nios-700">
                                 {getAvailableSessions().find((s) => s.value === formData.session)?.description}
                               </p>
                               {formData.session && calculateLateFee(formData.session) > 0 && (
-                                <p className="mt-1 text-teal-600">
+                                <p className="mt-1 text-nios-600">
                                   <strong>Note:</strong> A late fee of ₹{calculateLateFee(formData.session)} will be
                                   applied.
                                 </p>
@@ -771,12 +811,12 @@ export default function AdmissionFormPage() {
                       </div>
 
                       <div className="rounded-md border p-4">
-                        <div className="mb-4 rounded-md bg-teal-50 p-3 text-sm">
+                        <div className="mb-4 rounded-md bg-nios-50 p-3 text-sm">
                           <div className="flex">
-                            <Info className="mr-2 h-4 w-4 text-teal-600" />
+                            <Info className="mr-2 h-4 w-4 text-nios-600" />
                             <div>
-                              <p className="font-medium text-teal-700">Subject Selection Information</p>
-                              <ul className="mt-1 list-inside list-disc space-y-1 text-teal-600">
+                              <p className="font-medium text-nios-700">Subject Selection Information</p>
+                              <ul className="mt-1 list-inside list-disc space-y-1 text-nios-600">
                                 <li>You can select a minimum of 1 and a maximum of 7 subjects</li>
                                 <li>First 5 subjects: Base fee applies</li>
                                 <li>Additional subjects (6th & 7th): ₹940 per subject</li>
@@ -820,10 +860,10 @@ export default function AdmissionFormPage() {
 
                 {step === 3 && (
                   <div className="space-y-6">
-                    <Alert className="bg-teal-50 text-teal-800">
-                      <AlertCircle className="h-4 w-4 text-teal-600" />
-                      <AlertTitle className="text-teal-700">Required Documents</AlertTitle>
-                      <AlertDescription className="text-teal-600">
+                    <Alert className="bg-nios-50 text-nios-800">
+                      <AlertCircle className="h-4 w-4 text-nios-600" />
+                      <AlertTitle className="text-nios-700">Required Documents</AlertTitle>
+                      <AlertDescription className="text-nios-600">
                         <p className="mb-2">
                           Please upload the following documents in JPG, PNG or PDF format. Each file should be less than
                           2MB in size.
@@ -908,7 +948,7 @@ export default function AdmissionFormPage() {
                         <div className="flex items-center gap-4">
                           <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
                             {formData.documents.idProof ? (
-                              <FileText className="h-6 w-6 text-teal-500" />
+                              <FileText className="h-6 w-6 text-nios-500" />
                             ) : (
                               <Upload className="h-6 w-6 text-muted-foreground" />
                             )}
@@ -934,7 +974,7 @@ export default function AdmissionFormPage() {
                         <div className="flex items-center gap-4">
                           <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
                             {formData.documents.dobProof ? (
-                              <FileText className="h-6 w-6 text-teal-500" />
+                              <FileText className="h-6 w-6 text-nios-500" />
                             ) : (
                               <Upload className="h-6 w-6 text-muted-foreground" />
                             )}
@@ -953,58 +993,6 @@ export default function AdmissionFormPage() {
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="residenceProof">
-                          Residence Proof <span className="text-red-500">*</span>
-                        </Label>
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
-                            {formData.documents.residenceProof ? (
-                              <FileText className="h-6 w-6 text-teal-500" />
-                            ) : (
-                              <Upload className="h-6 w-6 text-muted-foreground" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <Input
-                              id="residenceProof"
-                              type="file"
-                              accept="image/*,.pdf"
-                              onChange={(e) => handleInputChange("documents", "residenceProof", e.target.files[0])}
-                            />
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              Upload Aadhaar Card or other valid residence proof (JPG/PNG/PDF, max 2MB)
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="addressProof">
-                          Address Proof <span className="text-red-500">*</span>
-                        </Label>
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
-                            {formData.documents.addressProof ? (
-                              <FileText className="h-6 w-6 text-teal-500" />
-                            ) : (
-                              <Upload className="h-6 w-6 text-muted-foreground" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <Input
-                              id="addressProof"
-                              type="file"
-                              accept="image/*,.pdf"
-                              onChange={(e) => handleInputChange("documents", "addressProof", e.target.files[0])}
-                            />
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              Upload Aadhaar Card, utility bill, or other valid address proof (JPG/PNG/PDF, max 2MB)
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
                       {formData.course === "senior-secondary" && (
                         <div className="space-y-2">
                           <Label htmlFor="previousMarksheet">
@@ -1013,7 +1001,7 @@ export default function AdmissionFormPage() {
                           <div className="flex items-center gap-4">
                             <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
                               {formData.documents.previousMarksheet ? (
-                                <FileText className="h-6 w-6 text-teal-500" />
+                                <FileText className="h-6 w-6 text-nios-500" />
                               ) : (
                                 <Upload className="h-6 w-6 text-muted-foreground" />
                               )}
@@ -1041,7 +1029,7 @@ export default function AdmissionFormPage() {
                           <div className="flex items-center gap-4">
                             <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
                               {formData.documents.categoryProof ? (
-                                <FileText className="h-6 w-6 text-teal-500" />
+                                <FileText className="h-6 w-6 text-nios-500" />
                               ) : (
                                 <Upload className="h-6 w-6 text-muted-foreground" />
                               )}
@@ -1067,7 +1055,7 @@ export default function AdmissionFormPage() {
                 {step === 4 && (
                   <div className="space-y-6">
                     <div className="rounded-lg border p-4">
-                      <h3 className="mb-4 text-lg font-medium text-teal-700">Fee Summary</h3>
+                      <h3 className="mb-4 text-lg font-medium text-nios-700">Fee Summary</h3>
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span>Processing Fee</span>
@@ -1087,6 +1075,10 @@ export default function AdmissionFormPage() {
                             <span>₹{formData.fees.lateFee}</span>
                           </div>
                         )}
+                        <div className="flex justify-between">
+                          <span>Service Fee</span>
+                          <span>₹{formData.fees.serviceFee}</span>
+                        </div>
                         <div className="border-t pt-2">
                           <div className="flex justify-between font-medium">
                             <span>Total Fee</span>
@@ -1097,14 +1089,13 @@ export default function AdmissionFormPage() {
                     </div>
 
                     <div className="space-y-4">
-                      <h3 className="text-lg font-medium text-teal-700">Payment Method</h3>
-                      <Tabs defaultValue="online" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3">
-                          <TabsTrigger value="online">Online Payment</TabsTrigger>
-                          <TabsTrigger value="challan">Challan</TabsTrigger>
-                          <TabsTrigger value="dd">Demand Draft</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="online" className="space-y-4 pt-4">
+                      <h3 className="text-lg font-medium text-nios-700">Payment Method</h3>
+                      <div className="rounded-md border p-4">
+                        <div className="space-y-4">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="online" id="online" checked />
+                            <Label htmlFor="online">Online Payment</Label>
+                          </div>
                           <p className="text-sm text-muted-foreground">
                             Pay securely online using Credit Card, Debit Card, Net Banking, UPI, or Wallet.
                           </p>
@@ -1126,37 +1117,8 @@ export default function AdmissionFormPage() {
                               <Input id="cvv" placeholder="123" />
                             </div>
                           </div>
-                        </TabsContent>
-                        <TabsContent value="challan" className="space-y-4 pt-4">
-                          <p className="text-sm text-muted-foreground">
-                            Generate a challan and pay at any authorized bank branch.
-                          </p>
-                          <Button variant="outline">Generate Challan</Button>
-                        </TabsContent>
-                        <TabsContent value="dd" className="space-y-4 pt-4">
-                          <p className="text-sm text-muted-foreground">
-                            Pay through Demand Draft drawn in favor of "Secretary, NIOS" payable at NOIDA, UP.
-                          </p>
-                          <div className="grid gap-4 sm:grid-cols-2">
-                            <div className="space-y-2">
-                              <Label htmlFor="ddNumber">DD Number</Label>
-                              <Input id="ddNumber" placeholder="Enter DD Number" />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="ddDate">DD Date</Label>
-                              <Input id="ddDate" type="date" />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="bankName">Bank Name</Label>
-                              <Input id="bankName" placeholder="Enter Bank Name" />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="branchName">Branch Name</Label>
-                              <Input id="branchName" placeholder="Enter Branch Name" />
-                            </div>
-                          </div>
-                        </TabsContent>
-                      </Tabs>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex items-start space-x-2">
@@ -1185,12 +1147,12 @@ export default function AdmissionFormPage() {
                 </Button>
               )}
               {step < 4 ? (
-                <Button onClick={handleNext} className={`bg-teal-600 hover:bg-teal-700 ${step === 1 ? "ml-auto" : ""}`}>
+                <Button onClick={handleNext} className={`bg-nios-600 hover:bg-nios-700 ${step === 1 ? "ml-auto" : ""}`}>
                   Next <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
-                <Button onClick={handleSubmit} className="bg-teal-600 hover:bg-teal-700">
-                  Submit Application
+                <Button onClick={handleSubmit} className="bg-nios-600 hover:bg-nios-700" disabled={isLoading}>
+                  {isLoading ? "Submitting..." : "Submit Application"}
                 </Button>
               )}
             </CardFooter>
@@ -1198,16 +1160,16 @@ export default function AdmissionFormPage() {
         </>
       ) : (
         <Card className="mx-auto max-w-2xl">
-          <CardHeader className="bg-teal-50 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
-              <CheckCircle2 className="h-8 w-8 text-teal-600" />
+          <CardHeader className="bg-nios-50 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-nios-100">
+              <CheckCircle2 className="h-8 w-8 text-nios-600" />
             </div>
-            <CardTitle className="text-2xl text-teal-700">Application Submitted Successfully!</CardTitle>
+            <CardTitle className="text-2xl text-nios-700">Application Submitted Successfully!</CardTitle>
             <CardDescription>Your NIOS admission application has been submitted successfully.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 pt-6">
             <div className="rounded-lg border p-4">
-              <h3 className="mb-4 text-lg font-medium text-teal-700">Application Details</h3>
+              <h3 className="mb-4 text-lg font-medium text-nios-700">Application Details</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="font-medium">Application ID</span>
@@ -1258,23 +1220,23 @@ export default function AdmissionFormPage() {
               </div>
             </div>
 
-            <Alert className="bg-teal-50">
-              <AlertCircle className="h-4 w-4 text-teal-600" />
-              <AlertTitle className="text-teal-700">What's Next?</AlertTitle>
-              <AlertDescription className="text-teal-600">
+            <Alert className="bg-nios-50">
+              <AlertCircle className="h-4 w-4 text-nios-600" />
+              <AlertTitle className="text-nios-700">What's Next?</AlertTitle>
+              <AlertDescription className="text-nios-600">
                 <p className="mb-2">
-                  Your application will be reviewed by the NIOS admissions team. You will receive an email and SMS
+                  Your application will be reviewed by our admissions team. You will receive an email and SMS
                   notification once your application is processed.
                 </p>
                 <p>
                   Please note your Application ID for future reference. You can check your application status by logging
-                  into your NIOS account.
+                  into your ODL account.
                 </p>
               </AlertDescription>
             </Alert>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2 bg-slate-50">
-            <Button className="w-full bg-teal-600 hover:bg-teal-700">Download Acknowledgement</Button>
+            <Button className="w-full bg-nios-600 hover:bg-nios-700">Download Acknowledgement</Button>
             <Link href="/" className="w-full">
               <Button variant="outline" className="w-full">
                 Return to Home
