@@ -8,6 +8,8 @@ import Footer from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
 import { GoogleAnalytics } from "@/components/google-analytics"
 import { Suspense } from "react"
+import NewsletterPopup from "@/components/newsletter-popup"
+import Chatbot from "@/components/chatbot"
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700"],
@@ -36,6 +38,8 @@ export default function RootLayout({
             </Suspense>
             <Footer />
             <Toaster />
+            <NewsletterPopup />
+            <Chatbot />
           </div>
         </ThemeProvider>
         <GoogleAnalytics />

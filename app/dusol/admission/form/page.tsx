@@ -107,6 +107,8 @@ export default function DuSolAdmissionForm() {
       dobProof: null,
       educationCertificate: null,
       categoryCertificate: null,
+      extraDocument1: null,
+      extraDocument2: null,
     },
     fees: {
       programFee: 0,
@@ -116,6 +118,7 @@ export default function DuSolAdmissionForm() {
       serviceFee: 1000, // Service margin
       totalFee: 1200, // Initial total with registration and service fee
     },
+    comments: "",
   })
 
   const [errors, setErrors] = useState({})
@@ -916,65 +919,129 @@ export default function DuSolAdmissionForm() {
                           </div>
                         </div>
                       )}
+
+                      <div className="space-y-2">
+                        <Label htmlFor="extraDocument1">Additional Document 1</Label>
+                        <div className="flex items-center justify-center rounded-md border border-dashed p-4">
+                          <div className="text-center">
+                            <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
+                            <p className="mt-2 text-xs text-muted-foreground">Drag & drop or click to upload</p>
+                            <Input
+                              id="extraDocument1"
+                              type="file"
+                              className="hidden"
+                              accept="image/jpeg,image/png,application/pdf"
+                              onChange={(e) => handleInputChange("documents", "extraDocument1", e.target.files[0])}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => document.getElementById("extraDocument1").click()}
+                            >
+                              Select File
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="extraDocument2">Additional Document 2</Label>
+                        <div className="flex items-center justify-center rounded-md border border-dashed p-4">
+                          <div className="text-center">
+                            <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
+                            <p className="mt-2 text-xs text-muted-foreground">Drag & drop or click to upload</p>
+                            <Input
+                              id="extraDocument2"
+                              type="file"
+                              className="hidden"
+                              accept="image/jpeg,image/png,application/pdf"
+                              onChange={(e) => handleInputChange("documents", "extraDocument2", e.target.files[0])}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => document.getElementById("extraDocument2").click()}
+                            >
+                              Select File
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {step === 5 && (
                   <div className="space-y-6">
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-medium">Fee Summary</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Please review the fee details before proceeding to payment.
-                      </p>
+                    <div className="space-y-4 mb-6">
+                      <h3 className="text-lg font-medium">Additional Comments</h3>
+                      <Textarea
+                        placeholder="Please provide any additional information or special requirements..."
+                        rows={4}
+                        value={formData.comments || ""}
+                        onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                      />
                     </div>
 
-                    <div className="rounded-md bg-red-50 p-4">
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span>Program Fee:</span>
-                          <span className="font-medium">₹{formData.fees.programFee}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Registration Fee:</span>
-                          <span className="font-medium">₹{formData.fees.registrationFee}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Service Fee:</span>
-                          <span className="font-medium">₹{formData.fees.serviceFee}</span>
-                        </div>
-                        <div className="border-t pt-2 flex justify-between font-bold">
-                          <span>Total Fee:</span>
-                          <span>₹{formData.fees.totalFee}</span>
+                    <div className="space-y-6">
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium">Fee Summary</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Please review the fee details before proceeding to payment.
+                        </p>
+                      </div>
+
+                      <div className="rounded-md bg-red-50 p-4">
+                        <div className="space-y-3">
+                          <div className="flex justify-between">
+                            <span>Program Fee:</span>
+                            <span className="font-medium">₹{formData.fees.programFee}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Registration Fee:</span>
+                            <span className="font-medium">₹{formData.fees.registrationFee}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Service Fee:</span>
+                            <span className="font-medium">₹{formData.fees.serviceFee}</span>
+                          </div>
+                          <div className="border-t pt-2 flex justify-between font-bold">
+                            <span>Total Fee:</span>
+                            <span>₹{formData.fees.totalFee}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="rounded-md border p-4">
-                      <h4 className="mb-2 font-medium">Payment Methods</h4>
-                      <RadioGroup defaultValue="upi" className="space-y-3">
-                        <div className="flex items-center space-x-2 rounded-md border p-3">
-                          <RadioGroupItem value="upi" id="upi" />
-                          <Label htmlFor="upi">UPI</Label>
-                        </div>
-                        <div className="flex items-center space-x-2 rounded-md border p-3">
-                          <RadioGroupItem value="card" id="card" />
-                          <Label htmlFor="card">Credit/Debit Card</Label>
-                        </div>
-                        <div className="flex items-center space-x-2 rounded-md border p-3">
-                          <RadioGroupItem value="netbanking" id="netbanking" />
-                          <Label htmlFor="netbanking">Net Banking</Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
+                      <div className="rounded-md border p-4">
+                        <h4 className="mb-2 font-medium">Payment Methods</h4>
+                        <RadioGroup defaultValue="upi" className="space-y-3">
+                          <div className="flex items-center space-x-2 rounded-md border p-3">
+                            <RadioGroupItem value="upi" id="upi" />
+                            <Label htmlFor="upi">UPI</Label>
+                          </div>
+                          <div className="flex items-center space-x-2 rounded-md border p-3">
+                            <RadioGroupItem value="card" id="card" />
+                            <Label htmlFor="card">Credit/Debit Card</Label>
+                          </div>
+                          <div className="flex items-center space-x-2 rounded-md border p-3">
+                            <RadioGroupItem value="netbanking" id="netbanking" />
+                            <Label htmlFor="netbanking">Net Banking</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
 
-                    <div className="rounded-md border p-4">
-                      <div className="flex items-start space-x-3">
-                        <input type="checkbox" id="terms" className="mt-1" />
-                        <Label htmlFor="terms" className="text-sm">
-                          I agree to the terms and conditions and confirm that all the information provided is correct
-                          to the best of my knowledge.
-                        </Label>
+                      <div className="rounded-md border p-4">
+                        <div className="flex items-start space-x-3">
+                          <input type="checkbox" id="terms" className="mt-1" />
+                          <Label htmlFor="terms" className="text-sm">
+                            I agree to the terms and conditions and confirm that all the information provided is correct
+                            to the best of my knowledge.
+                          </Label>
+                        </div>
                       </div>
                     </div>
                   </div>

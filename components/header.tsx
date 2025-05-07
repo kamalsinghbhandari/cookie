@@ -39,7 +39,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="announcement-bar overflow-hidden whitespace-nowrap">
+      <div className="announcement-bar bg-nios-700 overflow-hidden whitespace-nowrap py-2 text-center text-sm text-white">
         <div className="inline-block">
           NIOS Admissions Open for 2025-26 | IGNOU July 2025 Session Registration Started | DU SOL Admissions Closing
           Soon
@@ -48,12 +48,12 @@ export default function Header() {
       <header
         className={cn(
           "sticky top-0 z-50 w-full transition-all duration-200",
-          isScrolled ? "bg-white shadow-md" : "bg-white/80 backdrop-blur-sm",
+          isScrolled ? "bg-white shadow-md" : "bg-white/95 backdrop-blur-sm",
         )}
       >
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
-            <span className="text-2xl font-bold text-nios-600">ODL</span>
+            <span className="text-2xl font-bold text-nios-700">ODL</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -61,7 +61,9 @@ export default function Header() {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>NIOS</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-nios-700 hover:bg-nios-50 hover:text-nios-800">
+                    NIOS
+                  </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                       <ListItem href="/nios/admission/form" title="Admission">
@@ -86,7 +88,9 @@ export default function Header() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>IGNOU</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-ignou-700 hover:bg-ignou-50 hover:text-ignou-800">
+                    IGNOU
+                  </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                       <ListItem href="/ignou/admission/form" title="Admission">
@@ -111,7 +115,9 @@ export default function Header() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>DU SOL</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="text-dusol-700 hover:bg-dusol-50 hover:text-dusol-800">
+                    DU SOL
+                  </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                       <ListItem href="/dusol/admission/form" title="Admission">
@@ -154,7 +160,7 @@ export default function Header() {
               <Button variant="outline">Login</Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-nios-600 hover:bg-nios-700">Register</Button>
+              <Button className="bg-nios-700 hover:bg-nios-800">Register</Button>
             </Link>
           </div>
 
@@ -219,7 +225,7 @@ export default function Header() {
                 </Button>
               </Link>
               <Link href="/register" onClick={closeMobileMenu}>
-                <Button className="w-full bg-nios-600 hover:bg-nios-700">Register</Button>
+                <Button className="w-full bg-nios-700 hover:bg-nios-800">Register</Button>
               </Link>
             </div>
           </div>
@@ -242,7 +248,7 @@ function MobileDropdown({ title, links }) {
       {isOpen && (
         <div className="ml-4 space-y-2 border-l border-gray-200 pl-4">
           {links.map((link, index) => (
-            <Link key={index} href={link.href} className="block py-1 text-gray-600 hover:text-nios-600">
+            <Link key={index} href={link.href} className="block py-1 text-gray-600 hover:text-nios-700">
               {link.label}
             </Link>
           ))}

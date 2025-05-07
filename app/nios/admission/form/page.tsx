@@ -55,6 +55,8 @@ export default function AdmissionFormPage() {
       addressProof: null,
       previousMarksheet: null,
       categoryProof: null,
+      extraDocument1: null,
+      extraDocument2: null,
     },
     fees: {
       registrationFee: 200, // Admin charges (not shown to user)
@@ -67,6 +69,7 @@ export default function AdmissionFormPage() {
       totalSubjects: 0,
       serviceFee: 200, // Service margin
     },
+    comments: "",
   })
 
   const [errors, setErrors] = useState({})
@@ -1048,12 +1051,71 @@ export default function AdmissionFormPage() {
                           </div>
                         </div>
                       )}
+
+                      <div className="space-y-2">
+                        <Label htmlFor="extraDocument1">Additional Document 1</Label>
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
+                            {formData.documents.extraDocument1 ? (
+                              <FileText className="h-6 w-6 text-nios-500" />
+                            ) : (
+                              <Upload className="h-6 w-6 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <Input
+                              id="extraDocument1"
+                              type="file"
+                              accept="image/*,.pdf"
+                              onChange={(e) => handleInputChange("documents", "extraDocument1", e.target.files[0])}
+                            />
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              Upload any additional supporting document (JPG/PNG/PDF, max 2MB)
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="extraDocument2">Additional Document 2</Label>
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">
+                            {formData.documents.extraDocument2 ? (
+                              <FileText className="h-6 w-6 text-nios-500" />
+                            ) : (
+                              <Upload className="h-6 w-6 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <Input
+                              id="extraDocument2"
+                              type="file"
+                              accept="image/*,.pdf"
+                              onChange={(e) => handleInputChange("documents", "extraDocument2", e.target.files[0])}
+                            />
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              Upload any additional supporting document (JPG/PNG/PDF, max 2MB)
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {step === 4 && (
                   <div className="space-y-6">
+                    <div className="space-y-2 mb-6">
+                      <Label htmlFor="comments">Additional Comments or Requirements</Label>
+                      <Textarea
+                        id="comments"
+                        placeholder="Please provide any additional information or special requirements..."
+                        rows={4}
+                        value={formData.comments || ""}
+                        onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                      />
+                    </div>
+
                     <div className="rounded-lg border p-4">
                       <h3 className="mb-4 text-lg font-medium text-nios-700">Fee Summary</h3>
                       <div className="space-y-2">

@@ -943,12 +943,74 @@ export default function IgnouAdmissionForm() {
                           </div>
                         </div>
                       )}
+
+                      <div className="space-y-2">
+                        <Label htmlFor="extraDocument1">Additional Document 1</Label>
+                        <div className="flex items-center justify-center rounded-md border border-dashed p-4">
+                          <div className="text-center">
+                            <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
+                            <p className="mt-2 text-xs text-muted-foreground">Drag & drop or click to upload</p>
+                            <Input
+                              id="extraDocument1"
+                              type="file"
+                              className="hidden"
+                              accept="image/jpeg,image/png,application/pdf"
+                              onChange={(e) => handleInputChange("documents", "extraDocument1", e.target.files[0])}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => document.getElementById("extraDocument1").click()}
+                            >
+                              Select File
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="extraDocument2">Additional Document 2</Label>
+                        <div className="flex items-center justify-center rounded-md border border-dashed p-4">
+                          <div className="text-center">
+                            <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
+                            <p className="mt-2 text-xs text-muted-foreground">Drag & drop or click to upload</p>
+                            <Input
+                              id="extraDocument2"
+                              type="file"
+                              className="hidden"
+                              accept="image/jpeg,image/png,application/pdf"
+                              onChange={(e) => handleInputChange("documents", "extraDocument2", e.target.files[0])}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => document.getElementById("extraDocument2").click()}
+                            >
+                              Select File
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {step === 5 && (
                   <div className="space-y-6">
+                    <div className="space-y-4 mb-6">
+                      <h3 className="text-lg font-medium">Additional Comments</h3>
+                      <Textarea
+                        placeholder="Please provide any additional information or special requirements..."
+                        rows={4}
+                        value={formData.comments || ""}
+                        onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                      />
+                    </div>
+
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium">Fee Summary</h3>
                       <p className="text-sm text-muted-foreground">
