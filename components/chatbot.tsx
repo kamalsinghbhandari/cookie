@@ -5,15 +5,30 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MessageSquare, Send, X, Mail } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { sendUrgentQuery } from "@/app/actions/chatbot-actions"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
-    { role: "bot", content: "Hi there! 👋 How can I help you with your ODL queries today?" },
+    {
+      role: "bot",
+      content:
+        "Hi there! 👋 How can I help you with your ODL queries today? For urgent assistance, you can also reach us on Telegram: @niosdelhibot",
+    },
   ])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isUrgentDialogOpen, setIsUrgentDialogOpen] = useState(false)
+  const [urgentEmail, setUrgentEmail] = useState("")
+  const [urgentQuery, setUrgentQuery] = useState("")
   const messagesEndRef = useRef(null)
   const { toast } = useToast()
 
@@ -43,17 +58,10 @@ export default function Chatbot() {
       const response = await processQuery(input)
       setMessages((prev) => [...prev, { role: "bot", content: response.message }])
 
-      // If it's an urgent query, send email notification
+      // If it's an urgent query, open the urgent dialog
       if (response.isUrgent) {
-        await sendUrgentQuery({
-          query: input,
-          timestamp: new Date().toISOString(),
-        })
-
-        toast({
-          title: "Urgent Query Received",
-          description: "We've notified our team about your urgent query. Someone will contact you soon.",
-        })
+        setUrgentQuery(input)
+        setIsUrgentDialogOpen(true)
       }
     } catch (error) {
       setMessages((prev) => [
@@ -145,7 +153,7 @@ export default function Chatbot() {
     if (isUrgent) {
       return {
         message:
-          "I understand this is urgent. Let me connect you with our support team who can help you immediately. Please provide your contact details or email us directly at niosdiscussion@gmail.com.",
+          "I understand this is urgent. Let me connect you with our support team who can help you immediately. Please contact us on Telegram: @niosdelhibot or email us at niosdiscussion@gmail.com.",
         isUrgent: true,
       }
     }
@@ -158,28 +166,53 @@ export default function Chatbot() {
     }
   }
 
-  const handleUrgentRequest = async () => {
+  const handleUrgentRequest = () => {
+    setUrgentQuery("User requested urgent assistance through chatbot")
+    setIsUrgentDialogOpen(true)
+  }
+
+  const handleUrgentSubmit = async () => {
     setIsLoading(true)
 
     try {
-      await sendUrgentQuery({
-        query: "User requested urgent assistance through chatbot",
-        timestamp: new Date().toISOString(),
-      })
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "bot",
-          content:
-            "I've notified our support team about your urgent request. Someone will contact you shortly. You can also email us directly at niosdiscussion@gmail.com for immediate assistance.",
+      const response = await fetch("/api/urgent-query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ])
-
-      toast({
-        title: "Urgent Request Sent",
-        description: "Our team has been notified and will contact you soon.",
+        body: JSON.stringify({
+          email: urgentEmail,
+          query: urgentQuery,
+          timestamp: new Date().toISOString(),
+        }),
       })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "bot",
+            content:
+              "I've notified our support team about your urgent request. Someone will contact you shortly. For immediate assistance, please contact us on Telegram: @niosdelhibot or email us at niosdiscussion@gmail.com.",
+          },
+        ])
+
+        toast({
+          title: "Urgent Request Sent",
+          description: "Our team has been notified and will contact you soon.",
+        })
+
+        setIsUrgentDialogOpen(false)
+        setUrgentEmail("")
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Request Failed",
+          description: "Failed to send urgent request. Please try again or email us directly.",
+        })
+      }
     } catch (error) {
       toast({
         variant: "destructive",
@@ -232,7 +265,7 @@ export default function Chatbot() {
           </div>
 
           {/* Urgent request button */}
-          <div className="border-t border-gray-200 px-4 py-2">
+          <div className="border-t border-gray-200 px-4 py-2 space-y-2">
             <Button
               variant="outline"
               size="sm"
@@ -242,6 +275,15 @@ export default function Chatbot() {
             >
               <Mail className="mr-2 h-4 w-4" />
               Request Urgent Assistance
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 hover:text-blue-600"
+              onClick={() => window.open("https://t.me/niosdelhibot", "_blank")}
+            >
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Contact on Telegram
             </Button>
           </div>
 
@@ -267,6 +309,41 @@ export default function Chatbot() {
           </div>
         </div>
       )}
+
+      {/* Urgent Request Dialog */}
+      <Dialog open={isUrgentDialogOpen} onOpenChange={setIsUrgentDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Urgent Assistance Request</DialogTitle>
+            <DialogDescription>
+              Please provide your email so our team can contact you as soon as possible.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="urgent-email">Your Email</Label>
+              <Input
+                id="urgent-email"
+                value={urgentEmail}
+                onChange={(e) => setUrgentEmail(e.target.value)}
+                placeholder="your.email@example.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Your Query</Label>
+              <p className="text-sm text-muted-foreground">{urgentQuery}</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsUrgentDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUrgentSubmit} disabled={isLoading}>
+              {isLoading ? "Sending..." : "Send Urgent Request"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

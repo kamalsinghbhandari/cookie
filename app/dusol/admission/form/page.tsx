@@ -15,6 +15,8 @@ import { format } from "date-fns"
 import { CalendarIcon, CheckCircle2, Upload } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Info } from "lucide-react"
 
 // Helper functions for DU SOL programs
 const getDuSolPrograms = (programType) => {
@@ -398,11 +400,42 @@ export default function DuSolAdmissionForm() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="2024-25">2024-25</SelectItem>
-                          <SelectItem value="2025-26">2025-26</SelectItem>
+                          <SelectItem value="2025-26">2025-26 (UG: June 3 - Aug 15, PG: May 10 - 20)</SelectItem>
+                          <SelectItem value="2026-27">2026-27</SelectItem>
                         </SelectContent>
                       </Select>
                       {errors.session && <p className="text-xs text-red-500">{errors.session}</p>}
                     </div>
+
+                    {formData.session === "2025-26" && (
+                      <Alert className="mt-2 bg-red-50">
+                        <Info className="h-4 w-4" />
+                        <AlertTitle>2025-26 Session Information</AlertTitle>
+                        <AlertDescription>
+                          <p>
+                            <strong>UG Admissions:</strong>
+                          </p>
+                          <p>Start Date: 3rd June 2025</p>
+                          <p>Last Date to Apply: 15th August 2025</p>
+                          <p>
+                            <strong>PG Admissions:</strong>
+                          </p>
+                          <p>Start Date: 10th May 2025</p>
+                          <p>Last Date to Apply: 20th May 2025</p>
+                          <p>
+                            Application Portal:{" "}
+                            <a
+                              href="https://sol.du.ac.in"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-red-600 hover:underline"
+                            >
+                              sol.du.ac.in
+                            </a>
+                          </p>
+                        </AlertDescription>
+                      </Alert>
+                    )}
 
                     {formData.program && (
                       <div className="rounded-md bg-red-50 p-4">

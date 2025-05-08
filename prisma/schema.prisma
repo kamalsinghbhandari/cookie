@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  password       String
+  name           String?
+  phone          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  registrations  Registration[]
+  formSubmissions FormSubmission[]
+}
+
+model Registration {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  institution    String    // NIOS, IGNOU, DU SOL
+  course         String
+  programType    String?
+  session        String
+  status         String    @default("pending") // pending, approved, rejected
+  documents      Document[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Document {
+  id             String    @id @default(cuid())
+  registrationId String
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  type           String    // photo, signature, idProof, etc.
+  fileName       String
+  fileUrl        String
+  uploadedAt     DateTime  @default(now())
+}
+
+model FormSubmission {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  formType       String    // NIOS, IGNOU, DU SOL
+  formData       Json
+  comments       String?
+  status         String    @default("pending")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model UrgentQuery {
+  id             String    @id @default(cuid())
+  email          String?
+  query          String
+  timestamp      DateTime  @default(now())
+  resolved       Boolean   @default(false)
+}

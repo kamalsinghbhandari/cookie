@@ -23,6 +23,8 @@ import {
   Pencil,
   Trash2,
   Download,
+  ImageIcon,
+  DollarSign,
 } from "lucide-react"
 
 export default function AdminDashboard() {
@@ -54,8 +56,12 @@ export default function AdminDashboard() {
     const email = e.target.email.value
     const password = e.target.password.value
 
-    if (email === "niosdiscussion@gmail.com" && password === "admin123") {
+    // In a real implementation, this would use a secure authentication method
+    // with hashed passwords and proper JWT token handling
+    if (email === "niosdiscussion@gmail.com" && password === "L22JUPVJJJ") {
       setIsAuthenticated(true)
+      // Set a secure JWT token in localStorage or cookies (in a real implementation)
+      // localStorage.setItem('adminToken', 'secure-jwt-token-would-go-here')
       toast({
         title: "Login successful",
         description: "Welcome to the admin dashboard.",
@@ -150,6 +156,27 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("content")}
           >
             <Settings className="mr-2 h-4 w-4" /> Content
+          </Button>
+          <Button
+            variant={activeTab === "banners" ? "secondary" : "ghost"}
+            className="w-full justify-start"
+            onClick={() => setActiveTab("banners")}
+          >
+            <ImageIcon className="mr-2 h-4 w-4" /> Banner Management
+          </Button>
+          <Button
+            variant={activeTab === "pricing" ? "secondary" : "ghost"}
+            className="w-full justify-start"
+            onClick={() => setActiveTab("pricing")}
+          >
+            <DollarSign className="mr-2 h-4 w-4" /> Pricing Control
+          </Button>
+          <Button
+            variant={activeTab === "analytics" ? "secondary" : "ghost"}
+            className="w-full justify-start"
+            onClick={() => setActiveTab("analytics")}
+          >
+            <BarChart3 className="mr-2 h-4 w-4" /> Analytics
           </Button>
           <Button
             variant={activeTab === "notifications" ? "secondary" : "ghost"}
@@ -519,6 +546,373 @@ export default function AdminDashboard() {
 
               {/* Similar content for other tabs */}
             </Tabs>
+          </div>
+        )}
+
+        {activeTab === "banners" && (
+          <div>
+            <h1 className="mb-6 text-2xl font-bold">Banner Management</h1>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Homepage Banners</CardTitle>
+                <CardDescription>Manage banners displayed on the homepage</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <h3 className="text-lg font-medium">Current Banners</h3>
+                    <Button>
+                      <PlusCircle className="mr-2 h-4 w-4" /> Add New Banner
+                    </Button>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <Card key={i} className="overflow-hidden">
+                        <div className="aspect-[21/9] bg-muted relative">
+                          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
+                            Banner Image {i}
+                          </div>
+                        </div>
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <h4 className="font-medium">Banner {i}</h4>
+                              <p className="text-sm text-muted-foreground">Active until: May 31, 2025</p>
+                            </div>
+                            <div className="flex space-x-2">
+                              <Button variant="outline" size="sm">
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button variant="outline" size="sm" className="text-red-500">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === "pricing" && (
+          <div>
+            <h1 className="mb-6 text-2xl font-bold">Pricing Control</h1>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Service Fees</CardTitle>
+                <CardDescription>Manage service fees for different institutions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">NIOS Service Fee</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold">₹200</span>
+                          <Button variant="outline" size="sm">
+                            <Pencil className="h-4 w-4 mr-2" /> Edit
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">IGNOU Service Fee</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold">₹1000</span>
+                          <Button variant="outline" size="sm">
+                            <Pencil className="h-4 w-4 mr-2" /> Edit
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">DU SOL Service Fee</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold">₹1000</span>
+                          <Button variant="outline" size="sm">
+                            <Pencil className="h-4 w-4 mr-2" /> Edit
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Course Pricing</h3>
+                    <Tabs defaultValue="nios">
+                      <TabsList>
+                        <TabsTrigger value="nios">NIOS</TabsTrigger>
+                        <TabsTrigger value="ignou">IGNOU</TabsTrigger>
+                        <TabsTrigger value="dusol">DU SOL</TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="nios" className="mt-4">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Course</TableHead>
+                              <TableHead>Base Fee</TableHead>
+                              <TableHead>Our Fee</TableHead>
+                              <TableHead>Total</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell>Secondary (Class 10)</TableCell>
+                              <TableCell>₹1,800</TableCell>
+                              <TableCell>₹200</TableCell>
+                              <TableCell>₹2,000</TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm">
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>Senior Secondary (Class 12)</TableCell>
+                              <TableCell>₹2,000</TableCell>
+                              <TableCell>₹200</TableCell>
+                              <TableCell>₹2,200</TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm">
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TabsContent>
+
+                      <TabsContent value="ignou" className="mt-4">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Course</TableHead>
+                              <TableHead>Base Fee</TableHead>
+                              <TableHead>Our Fee</TableHead>
+                              <TableHead>Total</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell>BAG (Bachelor of Arts)</TableCell>
+                              <TableCell>₹5,400</TableCell>
+                              <TableCell>₹1,000</TableCell>
+                              <TableCell>₹6,400</TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm">
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>BCA (Bachelor of Computer Applications)</TableCell>
+                              <TableCell>₹13,400</TableCell>
+                              <TableCell>₹1,000</TableCell>
+                              <TableCell>₹14,400</TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm">
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TabsContent>
+
+                      <TabsContent value="dusol" className="mt-4">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Course</TableHead>
+                              <TableHead>Base Fee</TableHead>
+                              <TableHead>Our Fee</TableHead>
+                              <TableHead>Total</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell>B.A. Programme</TableCell>
+                              <TableCell>₹5,140</TableCell>
+                              <TableCell>₹1,000</TableCell>
+                              <TableCell>₹6,140</TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm">
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>B.Com (Hons.)</TableCell>
+                              <TableCell>₹6,840</TableCell>
+                              <TableCell>₹1,000</TableCell>
+                              <TableCell>₹7,840</TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm">
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === "analytics" && (
+          <div>
+            <h1 className="mb-6 text-2xl font-bold">Analytics</h1>
+
+            <div className="grid gap-6 md:grid-cols-3 mb-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Website Visitors</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">2,543</div>
+                  <p className="text-xs text-green-500">+18% from last month</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Form Submissions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">187</div>
+                  <p className="text-xs text-green-500">+24% from last month</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Conversion Rate</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">7.35%</div>
+                  <p className="text-xs text-green-500">+2.1% from last month</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Traffic Overview</CardTitle>
+                <CardDescription>Website traffic over the last 30 days</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[300px] w-full bg-muted/20 flex items-center justify-center">
+                  <p className="text-muted-foreground">Traffic chart will be displayed here</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-6 md:grid-cols-2 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Popular Courses</CardTitle>
+                  <CardDescription>Most viewed courses in the last 30 days</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Course</TableHead>
+                        <TableHead>Institution</TableHead>
+                        <TableHead>Views</TableHead>
+                        <TableHead>Conversion</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>B.Com</TableCell>
+                        <TableCell>DU SOL</TableCell>
+                        <TableCell>1,245</TableCell>
+                        <TableCell>8.2%</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>BCA</TableCell>
+                        <TableCell>IGNOU</TableCell>
+                        <TableCell>987</TableCell>
+                        <TableCell>7.5%</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Class 12</TableCell>
+                        <TableCell>NIOS</TableCell>
+                        <TableCell>854</TableCell>
+                        <TableCell>9.3%</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Traffic Sources</CardTitle>
+                  <CardDescription>Where your visitors are coming from</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Source</TableHead>
+                        <TableHead>Visitors</TableHead>
+                        <TableHead>Percentage</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Google</TableCell>
+                        <TableCell>1,542</TableCell>
+                        <TableCell>60.6%</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Direct</TableCell>
+                        <TableCell>487</TableCell>
+                        <TableCell>19.2%</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Social Media</TableCell>
+                        <TableCell>324</TableCell>
+                        <TableCell>12.7%</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Referrals</TableCell>
+                        <TableCell>190</TableCell>
+                        <TableCell>7.5%</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
 

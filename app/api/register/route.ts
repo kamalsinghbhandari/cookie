@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server"
+import { hash } from "bcryptjs"
+import prisma from "@/lib/db"
 import nodemailer from "nodemailer"
 
 // Configure email transporter
@@ -14,6 +16,43 @@ export async function POST(request) {
   try {
     const body = await request.json()
     const { name, email, password, phone, institution, course, hearAbout } = body
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    })
+
+    if (existingUser) {
+      return NextResponse.json({ success: false, message: "User with this email already exists" }, { status: 400 })
+    }
+
+    // Hash the password
+    const hashedPassword = await hash(password, 10)
+
+    // Create the user
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        phone,
+      },
+    })
+
+    // Create registration if institution and course are provided
+    if (institution && course) {
+      await prisma.registration.create({
+        data: {
+          userId: user.id,
+          institution,
+          course,
+          session: "2025-26", // Default session
+          status: "pending",
+        },
+      })
+    }
 
     // Generate a verification token
     const verificationToken = Math.random().toString(36).substring(2, 15)
