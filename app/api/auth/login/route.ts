@@ -1,41 +1,40 @@
 import { NextResponse } from "next/server"
-import { compare } from "bcryptjs"
-import prisma from "@/lib/db"
-import { sign } from "jsonwebtoken"
+
+// Simple in-memory user database
+const users = [
+  {
+    id: "1",
+    email: "admin@example.com",
+    password: "password123", // In production, this would be hashed
+    name: "Admin User",
+  },
+  {
+    id: "2",
+    email: "niosdiscussion@gmail.com",
+    password: "admin123", // In production, this would be hashed
+    name: "NIOS Admin",
+  },
+]
 
 export async function POST(request) {
   try {
     const body = await request.json()
     const { email, password } = body
 
-    // Find the user
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    })
+    // Find user
+    const user = users.find((u) => u.email === email)
 
     if (!user) {
       return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 })
     }
 
-    // Compare passwords
-    const isPasswordValid = await compare(password, user.password)
-
-    if (!isPasswordValid) {
+    // Simple password check (in production, use proper password hashing)
+    if (user.password !== password) {
       return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 })
     }
 
-    // Create JWT token
-    const token = sign(
-      {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
-      process.env.JWT_SECRET || "your-secret-key",
-      { expiresIn: "7d" },
-    )
+    // Create a simple token
+    const token = Buffer.from(`${user.id}:${user.email}`).toString("base64")
 
     // Set cookie in the response
     const response = NextResponse.json({

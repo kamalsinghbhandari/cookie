@@ -3,10 +3,10 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
@@ -21,7 +21,6 @@ export default function RegisterPage() {
     course: "",
     hearAbout: "",
   })
-  const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -35,40 +34,36 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const validateForm = () => {
-    const newErrors = {}
-
-    if (!formData.name) newErrors.name = "Name is required"
-    if (!formData.email) newErrors.email = "Email is required"
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid"
-
-    if (!formData.password) newErrors.password = "Password is required"
-    else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters"
-
-    if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password"
-    else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match"
-
-    if (!formData.phone) newErrors.phone = "Phone number is required"
-    else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "Phone number must be 10 digits"
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!validateForm()) return
+    // Validate form
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Passwords do not match",
+        description: "Please make sure your passwords match.",
+      })
+      return
+    }
 
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          institution: formData.institution,
+          course: formData.course,
+          hearAbout: formData.hearAbout,
+        }),
       })
 
       const data = await response.json()
@@ -76,21 +71,21 @@ export default function RegisterPage() {
       if (data.success) {
         toast({
           title: "Registration Successful",
-          description: data.message,
+          description: "Your account has been created successfully.",
         })
         router.push("/login")
       } else {
         toast({
           variant: "destructive",
           title: "Registration Failed",
-          description: data.message,
+          description: data.message || "An error occurred during registration.",
         })
       }
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: "An error occurred. Please try again later.",
+        description: "An error occurred during registration. Please try again.",
       })
     } finally {
       setIsLoading(false)
@@ -98,161 +93,138 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="container flex h-screen items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Create an Account</CardTitle>
-          <CardDescription>Sign up to access ODL services</CardDescription>
+    <div className="container py-10">
+      <Card className="mx-auto w-full max-w-lg">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">Create an Account</CardTitle>
+          <CardDescription>Enter your details to create a new account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={errors.name ? "border-red-500" : ""}
-                />
-                {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? "border-red-500" : ""}
-                />
-                {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={errors.password ? "border-red-500" : ""}
-                  />
-                  {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className={errors.confirmPassword ? "border-red-500" : ""}
-                  />
-                  {errors.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword}</p>}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={errors.phone ? "border-red-500" : ""}
-                />
-                {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="institution">Interested Institution (Optional)</Label>
-                <Select
-                  value={formData.institution}
-                  onValueChange={(value) => handleSelectChange("institution", value)}
-                >
-                  <SelectTrigger id="institution">
-                    <SelectValue placeholder="Select institution" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NIOS">NIOS</SelectItem>
-                    <SelectItem value="IGNOU">IGNOU</SelectItem>
-                    <SelectItem value="DU SOL">DU SOL</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {formData.institution && (
-                <div className="space-y-2">
-                  <Label htmlFor="course">Interested Course (Optional)</Label>
-                  <Select value={formData.course} onValueChange={(value) => handleSelectChange("course", value)}>
-                    <SelectTrigger id="course">
-                      <SelectValue placeholder="Select course" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {formData.institution === "NIOS" && (
-                        <>
-                          <SelectItem value="Secondary">Secondary (Class 10)</SelectItem>
-                          <SelectItem value="Senior Secondary">Senior Secondary (Class 12)</SelectItem>
-                        </>
-                      )}
-                      {formData.institution === "IGNOU" && (
-                        <>
-                          <SelectItem value="BAG">Bachelor of Arts (BAG)</SelectItem>
-                          <SelectItem value="BCOMG">Bachelor of Commerce (BCOMG)</SelectItem>
-                          <SelectItem value="BCA">Bachelor of Computer Applications (BCA)</SelectItem>
-                          <SelectItem value="MBA">Master of Business Administration (MBA)</SelectItem>
-                        </>
-                      )}
-                      {formData.institution === "DU SOL" && (
-                        <>
-                          <SelectItem value="BA">B.A. Programme</SelectItem>
-                          <SelectItem value="BCOM">B.Com Programme</SelectItem>
-                          <SelectItem value="BCOM-H">B.Com (Hons.)</SelectItem>
-                        </>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="hearAbout">How did you hear about us? (Optional)</Label>
-                <Select value={formData.hearAbout} onValueChange={(value) => handleSelectChange("hearAbout", value)}>
-                  <SelectTrigger id="hearAbout">
-                    <SelectValue placeholder="Select option" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Google">Google Search</SelectItem>
-                    <SelectItem value="Social Media">Social Media</SelectItem>
-                    <SelectItem value="Friend">Friend or Family</SelectItem>
-                    <SelectItem value="Advertisement">Advertisement</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating Account..." : "Create Account"}
-              </Button>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                name="name"
+                placeholder="John Doe"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="your.email@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="10-digit mobile number"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="institution">Interested Institution</Label>
+              <Select value={formData.institution} onValueChange={(value) => handleSelectChange("institution", value)}>
+                <SelectTrigger id="institution">
+                  <SelectValue placeholder="Select Institution" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="nios">NIOS</SelectItem>
+                  <SelectItem value="ignou">IGNOU</SelectItem>
+                  <SelectItem value="dusol">DU SOL</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="course">Interested Course</Label>
+              <Select value={formData.course} onValueChange={(value) => handleSelectChange("course", value)}>
+                <SelectTrigger id="course">
+                  <SelectValue placeholder="Select Course" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10th">10th</SelectItem>
+                  <SelectItem value="12th">12th</SelectItem>
+                  <SelectItem value="ba">BA</SelectItem>
+                  <SelectItem value="bcom">B.Com</SelectItem>
+                  <SelectItem value="bsc">B.Sc</SelectItem>
+                  <SelectItem value="ma">MA</SelectItem>
+                  <SelectItem value="mcom">M.Com</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="hearAbout">How did you hear about us?</Label>
+              <Select value={formData.hearAbout} onValueChange={(value) => handleSelectChange("hearAbout", value)}>
+                <SelectTrigger id="hearAbout">
+                  <SelectValue placeholder="Select Option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="google">Google Search</SelectItem>
+                  <SelectItem value="social">Social Media</SelectItem>
+                  <SelectItem value="friend">Friend/Family</SelectItem>
+                  <SelectItem value="advertisement">Advertisement</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating Account..." : "Create Account"}
+            </Button>
           </form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
+
+          <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/login" className="text-blue-600 hover:underline">
               Login
             </Link>
-          </p>
-        </CardFooter>
+          </div>
+        </CardContent>
       </Card>
     </div>
   )

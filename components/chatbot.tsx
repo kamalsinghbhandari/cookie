@@ -175,7 +175,7 @@ export default function Chatbot() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/urgent-query", {
+      const response = await fetch("/api/contact/urgent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

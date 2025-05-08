@@ -1,11 +1,76 @@
-import { PrismaClient } from "@prisma/client"
+// Simple in-memory database
+const users = [
+  {
+    id: "1",
+    email: "admin@example.com",
+    password: "password123", // In production, this would be hashed
+    name: "Admin User",
+  },
+  {
+    id: "2",
+    email: "niosdiscussion@gmail.com",
+    password: "admin123", // In production, this would be hashed
+    name: "NIOS Admin",
+  },
+]
 
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const registrations = []
+const formSubmissions = []
+const urgentQueries = []
 
-export const prisma = globalForPrisma.prisma || new PrismaClient()
+export const db = {
+  user: {
+    findUnique: async ({ where }) => {
+      return users.find((user) => user.email === where.email) || null
+    },
+    create: async ({ data }) => {
+      const newUser = {
+        id: String(users.length + 1),
+        ...data,
+      }
+      users.push(newUser)
+      return newUser
+    },
+  },
+  registration: {
+    create: async ({ data }) => {
+      const newRegistration = {
+        id: String(registrations.length + 1),
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+      registrations.push(newRegistration)
+      return newRegistration
+    },
+    findMany: async ({ where }) => {
+      return registrations.filter((reg) => reg.userId === where.userId)
+    },
+  },
+  formSubmission: {
+    create: async ({ data }) => {
+      const newSubmission = {
+        id: String(formSubmissions.length + 1),
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+      formSubmissions.push(newSubmission)
+      return newSubmission
+    },
+  },
+  urgentQuery: {
+    create: async ({ data }) => {
+      const newQuery = {
+        id: String(urgentQueries.length + 1),
+        ...data,
+        timestamp: new Date(),
+        resolved: false,
+      }
+      urgentQueries.push(newQuery)
+      return newQuery
+    },
+  },
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
-
-export default prisma
+export default db
