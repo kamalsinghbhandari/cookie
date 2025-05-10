@@ -1,8 +1,10 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,9 +16,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/"
   const { toast } = useToast()
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
@@ -36,7 +40,14 @@ export default function LoginPage() {
           title: "Login Successful",
           description: "You have been logged in successfully.",
         })
-        router.push("/")
+
+        // Redirect to admin panel if admin, otherwise to the callback URL
+        if (data.user.role === "admin") {
+          router.push("/admin")
+        } else {
+          router.push(callbackUrl)
+        }
+
         router.refresh()
       } else {
         toast({

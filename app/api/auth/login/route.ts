@@ -1,40 +1,34 @@
 import { NextResponse } from "next/server"
+import { db } from "@/lib/db"
+import { sign } from "jsonwebtoken"
 
-// Simple in-memory user database
-const users = [
-  {
-    id: "1",
-    email: "admin@example.com",
-    password: "password123", // In production, this would be hashed
-    name: "Admin User",
-  },
-  {
-    id: "2",
-    email: "niosdiscussion@gmail.com",
-    password: "admin123", // In production, this would be hashed
-    name: "NIOS Admin",
-  },
-]
-
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { email, password } = body
 
     // Find user
-    const user = users.find((u) => u.email === email)
-
+    const user = await db.users.findByEmail(email)
     if (!user) {
       return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 })
     }
 
-    // Simple password check (in production, use proper password hashing)
-    if (user.password !== password) {
+    // Verify password
+    const isPasswordValid = await db.users.verifyPassword(user, password)
+    if (!isPasswordValid) {
       return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 })
     }
 
-    // Create a simple token
-    const token = Buffer.from(`${user.id}:${user.email}`).toString("base64")
+    // Create JWT token
+    const token = sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production",
+      { expiresIn: "7d" },
+    )
 
     // Set cookie in the response
     const response = NextResponse.json({
@@ -43,6 +37,7 @@ export async function POST(request) {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     })
 

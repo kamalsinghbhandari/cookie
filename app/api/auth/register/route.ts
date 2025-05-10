@@ -1,51 +1,45 @@
 import { NextResponse } from "next/server"
+import { db } from "@/lib/db"
+import { sendWelcomeEmail } from "@/lib/email"
 
-// Simple in-memory user database
-const users = [
-  {
-    id: "1",
-    email: "admin@example.com",
-    password: "password123", // In production, this would be hashed
-    name: "Admin User",
-  },
-  {
-    id: "2",
-    email: "niosdiscussion@gmail.com",
-    password: "admin123", // In production, this would be hashed
-    name: "NIOS Admin",
-  },
-]
-
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, password, phone } = body
+    const { name, email, password, institution } = body
 
     // Check if user already exists
-    const existingUser = users.find((u) => u.email === email)
-
+    const existingUser = await db.users.findByEmail(email)
     if (existingUser) {
       return NextResponse.json({ success: false, message: "User with this email already exists" }, { status: 400 })
     }
 
     // Create new user
-    const newUser = {
-      id: String(users.length + 1),
-      email,
-      password, // In production, this would be hashed
+    const user = await db.users.create({
       name,
-      phone,
-    }
+      email,
+      password,
+      institution,
+    })
 
-    users.push(newUser)
+    // Send welcome email with login credentials
+    try {
+      await sendWelcomeEmail({
+        name,
+        email,
+        password, // This is the plain text password before hashing
+      })
+    } catch (emailError) {
+      console.error("Failed to send welcome email:", emailError)
+      // Continue with registration even if email fails
+    }
 
     return NextResponse.json({
       success: true,
       message: "Registration successful!",
       user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
+        id: user.id,
+        name: user.name,
+        email: user.email,
       },
     })
   } catch (error) {

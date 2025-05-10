@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -25,16 +27,16 @@ export default function RegisterPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSelectChange = (name, value) => {
+  const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     // Validate form
@@ -59,8 +61,8 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          phone: formData.phone,
           institution: formData.institution,
+          phone: formData.phone,
           course: formData.course,
           hearAbout: formData.hearAbout,
         }),
@@ -71,7 +73,7 @@ export default function RegisterPage() {
       if (data.success) {
         toast({
           title: "Registration Successful",
-          description: "Your account has been created successfully.",
+          description: "Your account has been created successfully. Please check your email for login details.",
         })
         router.push("/login")
       } else {
