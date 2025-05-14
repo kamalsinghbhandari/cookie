@@ -4,62 +4,53 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useRouter } from "next/navigation"
+import { login } from "@/app/actions/user-actions"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/"
   const { toast } = useToast()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
+      const formData = new FormData(event.currentTarget)
+      const result = await login(formData)
 
-      const data = await response.json()
-
-      if (data.success) {
+      if (result.success) {
         toast({
-          title: "Login Successful",
+          title: "Login successful",
           description: "You have been logged in successfully.",
         })
 
-        // Redirect to admin panel if admin, otherwise to the callback URL
-        if (data.user.role === "admin") {
+        // Redirect based on user role
+        if (result.user.role === "admin") {
           router.push("/admin")
         } else {
-          router.push(callbackUrl)
+          router.push("/dashboard")
         }
 
         router.refresh()
       } else {
         toast({
           variant: "destructive",
-          title: "Login Failed",
-          description: data.message || "Invalid email or password.",
+          title: "Login failed",
+          description: result.message || "Invalid email or password.",
         })
       }
     } catch (error) {
+      console.error("Login error:", error)
       toast({
         variant: "destructive",
-        title: "Login Failed",
+        title: "Login failed",
         description: "An error occurred during login. Please try again.",
       })
     } finally {
@@ -74,46 +65,34 @@ export default function LoginPage() {
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
           <CardDescription>Enter your email and password to login to your account</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your.email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <Input id="email" name="email" type="email" placeholder="m@example.com" required />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <Link href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-600">
                   Forgot password?
                 </Link>
               </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <Input id="password" name="password" type="password" required />
             </div>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Logging in..." : "Login"}
             </Button>
-          </form>
-
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-blue-600 hover:underline">
-              Register
-            </Link>
-          </div>
-        </CardContent>
+            <div className="text-center text-sm">
+              Don&apos;t have an account?{" "}
+              <Link href="/register" className="text-blue-500 hover:text-blue-600">
+                Register
+              </Link>
+            </div>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   )

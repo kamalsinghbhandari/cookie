@@ -1,27 +1,8 @@
 "use server"
 
 import { cookies } from "next/headers"
-
-// Simple in-memory user database
-const users = [
-  {
-    id: "1",
-    email: "admin@example.com",
-    password: "password123", // In production, this would be hashed
-    name: "Admin User",
-  },
-  {
-    id: "2",
-    email: "niosdiscussion@gmail.com",
-    password: "admin123", // In production, this would be hashed
-    name: "NIOS Admin",
-  },
-]
-
-// Simple token generation function
-const generateToken = () => {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-}
+import { sign } from "jsonwebtoken"
+import { db } from "@/lib/db"
 
 // Login action
 export async function login(formData: FormData) {
@@ -36,8 +17,8 @@ export async function login(formData: FormData) {
   }
 
   try {
-    // Find user
-    const user = users.find((u) => u.email === email)
+    // Find user in database
+    const user = await db.users.findByEmail(email)
 
     if (!user) {
       return {
@@ -46,16 +27,27 @@ export async function login(formData: FormData) {
       }
     }
 
-    // Simple password check (in production, use proper password hashing)
-    if (user.password !== password) {
+    // Verify password
+    const isPasswordValid = await db.users.verifyPassword(user, password)
+
+    if (!isPasswordValid) {
       return {
         success: false,
         message: "Invalid email or password",
       }
     }
 
-    // Generate a token
-    const token = generateToken()
+    // Generate JWT token
+    const token = sign(
+      {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+      process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production",
+      { expiresIn: "7d" },
+    )
 
     // Set cookie
     cookies().set("auth-token", token, {
@@ -72,6 +64,7 @@ export async function login(formData: FormData) {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     }
   } catch (error) {
@@ -88,7 +81,7 @@ export async function register(formData: FormData) {
   const name = formData.get("name") as string
   const email = formData.get("email") as string
   const password = formData.get("password") as string
-  const phone = formData.get("phone") as string
+  const institution = (formData.get("institution") as string) || ""
 
   if (!name || !email || !password) {
     return {
@@ -99,7 +92,7 @@ export async function register(formData: FormData) {
 
   try {
     // Check if user already exists
-    const existingUser = users.find((u) => u.email === email)
+    const existingUser = await db.users.findByEmail(email)
 
     if (existingUser) {
       return {
@@ -108,19 +101,26 @@ export async function register(formData: FormData) {
       }
     }
 
-    // Create user
-    const newUser = {
-      id: String(users.length + 1),
-      email,
-      password, // In production, this would be hashed
+    // Create user in database
+    const newUser = await db.users.create({
       name,
-      phone,
-    }
+      email,
+      password,
+      institution,
+      role: "student", // Default role
+    })
 
-    users.push(newUser)
-
-    // Generate a token
-    const token = generateToken()
+    // Generate JWT token
+    const token = sign(
+      {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+      },
+      process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production",
+      { expiresIn: "7d" },
+    )
 
     // Set cookie
     cookies().set("auth-token", token, {
@@ -137,6 +137,7 @@ export async function register(formData: FormData) {
         id: newUser.id,
         name: newUser.name,
         email: newUser.email,
+        role: newUser.role,
       },
     }
   } catch (error) {
@@ -164,12 +165,25 @@ export async function getCurrentUser() {
     return null
   }
 
-  // In a real implementation, you would verify the token
-  // and fetch the user from the database
-  // For now, we'll just return a dummy user
-  return {
-    id: "1",
-    name: "Test User",
-    email: "test@example.com",
+  try {
+    // Verify the token
+    const decoded = sign.verify(token, process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production") as any
+
+    // Get user from database
+    const user = await db.users.findByEmail(decoded.email)
+
+    if (!user) {
+      return null
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    }
+  } catch (error) {
+    console.error("Error getting current user:", error)
+    return null
   }
 }

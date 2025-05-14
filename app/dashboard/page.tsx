@@ -3,37 +3,43 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useToast } from "@/components/ui/use-toast"
+import { FileText, User, LogOut } from "lucide-react"
+import { logout } from "@/app/actions/user-actions"
 
-export default function DashboardPage() {
+export default function Dashboard() {
   const [user, setUser] = useState(null)
-  const [forms, setForms] = useState([])
+  const [applications, setApplications] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const { toast } = useToast()
 
   useEffect(() => {
-    // Fetch user data
-    const fetchUserData = async () => {
+    async function fetchUserData() {
       try {
-        const response = await fetch("/api/auth/status")
-        const data = await response.json()
+        // Fetch current user
+        const userResponse = await fetch("/api/user")
 
-        if (!data.authenticated) {
-          router.push("/login")
-          return
+        if (!userResponse.ok) {
+          if (userResponse.status === 401) {
+            router.push("/login")
+            return
+          }
+          throw new Error("Failed to fetch user data")
         }
 
-        setUser(data.user)
+        const userData = await userResponse.json()
+        setUser(userData.user)
 
-        // Fetch user's forms
-        const formsResponse = await fetch("/api/forms/user")
-        const formsData = await formsResponse.json()
+        // Fetch user applications
+        const applicationsResponse = await fetch("/api/user/applications")
 
-        if (formsData.success) {
-          setForms(formsData.forms)
+        if (applicationsResponse.ok) {
+          const applicationsData = await applicationsResponse.json()
+          setApplications(applicationsData.applications || [])
         }
       } catch (error) {
         console.error("Error fetching user data:", error)
@@ -52,11 +58,16 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" })
+      await logout()
       router.push("/login")
       router.refresh()
     } catch (error) {
       console.error("Logout error:", error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to logout. Please try again.",
+      })
     }
   }
 
@@ -76,132 +87,125 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">Welcome back, {user?.name || "Student"}</p>
         </div>
         <Button variant="outline" onClick={handleLogout}>
-          Logout
+          <LogOut className="mr-2 h-4 w-4" /> Logout
         </Button>
       </div>
 
-      <Tabs defaultValue="overview">
-        <TabsList className="mb-6">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="applications">My Applications</TabsTrigger>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Applications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{applications.length}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Applications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{applications.filter((app) => app.status === "pending").length}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Approved Applications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{applications.filter((app) => app.status === "approved").length}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="applications" className="mt-8">
+        <TabsList>
+          <TabsTrigger value="applications">
+            <FileText className="mr-2 h-4 w-4" /> My Applications
+          </TabsTrigger>
+          <TabsTrigger value="profile">
+            <User className="mr-2 h-4 w-4" /> Profile
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total Applications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{forms.length}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Pending Applications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{forms.filter((form) => form.status === "pending").length}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Completed Applications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{forms.filter((form) => form.status === "approved").length}</div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Start a new application or check status</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-4">
-                <Button onClick={() => router.push("/nios/admission/form")}>Apply for NIOS</Button>
-                <Button variant="outline" onClick={() => router.push("/dashboard/applications")}>
-                  View My Applications
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="applications">
+        <TabsContent value="applications" className="mt-6">
           <Card>
             <CardHeader>
               <CardTitle>My Applications</CardTitle>
-              <CardDescription>View and track your application status</CardDescription>
+              <CardDescription>View and track all your admission applications</CardDescription>
             </CardHeader>
             <CardContent>
-              {forms.length === 0 ? (
-                <p className="text-center py-8 text-muted-foreground">You haven't submitted any applications yet.</p>
-              ) : (
-                <div className="space-y-4">
-                  {forms.map((form) => (
-                    <Card key={form.id}>
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <h3 className="font-medium">{form.form_type.toUpperCase()} Application</h3>
-                            <p className="text-sm text-muted-foreground">
-                              Submitted on {new Date(form.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div className="flex items-center">
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs ${
-                                form.status === "approved"
-                                  ? "bg-green-100 text-green-800"
-                                  : form.status === "rejected"
-                                    ? "bg-red-100 text-red-800"
-                                    : "bg-yellow-100 text-yellow-800"
-                              }`}
-                            >
-                              {form.status.charAt(0).toUpperCase() + form.status.slice(1)}
-                            </span>
-                            <Button variant="ghost" size="sm" className="ml-2">
-                              View Details
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+              {applications.length === 0 ? (
+                <div className="py-8 text-center">
+                  <p className="text-muted-foreground">You haven't submitted any applications yet.</p>
+                  <Button className="mt-4" onClick={() => router.push("/admission")}>
+                    Apply Now
+                  </Button>
                 </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Institution</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {applications.map((app) => (
+                      <TableRow key={app.id}>
+                        <TableCell className="font-medium">{app.form_type.toUpperCase()}</TableCell>
+                        <TableCell>{new Date(app.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <span
+                            className={`rounded-full px-2 py-1 text-xs ${
+                              app.status === "approved"
+                                ? "bg-green-100 text-green-800"
+                                : app.status === "rejected"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="outline" size="sm" onClick={() => router.push(`/application/${app.id}`)}>
+                            View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="profile">
+        <TabsContent value="profile" className="mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Profile Information</CardTitle>
-              <CardDescription>View and update your profile details</CardDescription>
+              <CardDescription>Manage your account details</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Name</p>
-                  <p>{user?.name}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Email</p>
-                  <p>{user?.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Institution</p>
-                  <p>{user?.institution || "Not specified"}</p>
-                </div>
-                <Button className="mt-4">Edit Profile</Button>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="mb-1 font-medium">Full Name</h3>
+                <p className="text-muted-foreground">{user?.name}</p>
               </div>
+              <div>
+                <h3 className="mb-1 font-medium">Email</h3>
+                <p className="text-muted-foreground">{user?.email}</p>
+              </div>
+              <div>
+                <h3 className="mb-1 font-medium">Preferred Institution</h3>
+                <p className="text-muted-foreground">{user?.institution?.toUpperCase() || "Not specified"}</p>
+              </div>
+              <Button variant="outline">Edit Profile</Button>
             </CardContent>
           </Card>
         </TabsContent>

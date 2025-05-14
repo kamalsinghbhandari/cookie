@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server"
+import { cookies } from "next/headers"
 
 export async function POST() {
-  const response = NextResponse.json({ success: true })
+  // Delete the auth token cookie
+  cookies().delete("auth-token")
 
-  // Clear the auth token cookie
-  response.cookies.delete("auth-token")
-
-  return response
+  // Redirect to the home page
+  return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"))
 }

@@ -19,6 +19,7 @@ import { Menu, X, ChevronDown } from "lucide-react"
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState(null)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -26,6 +27,24 @@ export default function Header() {
       setIsScrolled(window.scrollY > 10)
     }
     window.addEventListener("scroll", handleScroll)
+
+    // Fetch current user
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/user")
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            setUser(data.user)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error)
+      }
+    }
+
+    fetchUser()
+
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
@@ -156,12 +175,27 @@ export default function Header() {
           </div>
 
           <div className="hidden space-x-2 md:flex">
-            <Link href="/login">
-              <Button variant="outline">Login</Button>
-            </Link>
-            <Link href="/register">
-              <Button className="bg-nios-700 hover:bg-nios-800">Register</Button>
-            </Link>
+            {user ? (
+              <>
+                <Link href={user.role === "admin" ? "/admin" : "/dashboard"}>
+                  <Button variant="outline">Dashboard</Button>
+                </Link>
+                <form action="/api/auth/logout" method="post">
+                  <Button type="submit" variant="ghost">
+                    Logout
+                  </Button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline">Login</Button>
+                </Link>
+                <Link href="/register">
+                  <Button className="bg-nios-700 hover:bg-nios-800">Register</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -219,14 +253,31 @@ export default function Header() {
             </div>
 
             <div className="mt-6 flex flex-col space-y-2">
-              <Link href="/login" onClick={closeMobileMenu}>
-                <Button variant="outline" className="w-full">
-                  Login
-                </Button>
-              </Link>
-              <Link href="/register" onClick={closeMobileMenu}>
-                <Button className="w-full bg-nios-700 hover:bg-nios-800">Register</Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link href={user.role === "admin" ? "/admin" : "/dashboard"} onClick={closeMobileMenu}>
+                    <Button variant="outline" className="w-full">
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <form action="/api/auth/logout" method="post">
+                    <Button type="submit" variant="ghost" className="w-full">
+                      Logout
+                    </Button>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" onClick={closeMobileMenu}>
+                    <Button variant="outline" className="w-full">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link href="/register" onClick={closeMobileMenu}>
+                    <Button className="w-full bg-nios-700 hover:bg-nios-800">Register</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

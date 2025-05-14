@@ -1,6 +1,9 @@
 import { neon } from "@neondatabase/serverless"
 import bcrypt from "bcryptjs"
 
+// Re-export neon for use in other modules
+export { neon }
+
 // Create a SQL client with the connection string
 const sql = neon(process.env.DATABASE_URL!)
 

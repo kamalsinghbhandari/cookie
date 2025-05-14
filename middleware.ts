@@ -1,60 +1,43 @@
 import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
 import { verify } from "jsonwebtoken"
 
-export function middleware(request: NextRequest) {
-  // Get the pathname of the request
-  const path = request.nextUrl.pathname
+export async function middleware(request: Request) {
+  const pathname = new URL(request.url).pathname
 
-  // Define protected routes
-  const isAdminRoute = path.startsWith("/admin")
-  const isApiAdminRoute = path.startsWith("/api/admin")
-  const isUserRoute = path.startsWith("/dashboard")
+  // Only run this middleware for admin routes
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next()
+  }
 
   // Get the token from the cookies
-  const token = request.cookies.get("auth-token")?.value
+  const cookies = request.headers.get("cookie") || ""
+  const tokenCookie = cookies.split("; ").find((c) => c.startsWith("auth-token="))
+  const token = tokenCookie?.split("=")[1]
 
-  // If it's a protected route and there's no token, redirect to login
-  if ((isAdminRoute || isUserRoute) && !token) {
-    const url = new URL("/login", request.url)
-    url.searchParams.set("callbackUrl", path)
-    return NextResponse.redirect(url)
+  if (!token) {
+    // Redirect to login page if no token is found
+    return NextResponse.redirect(new URL("/login", request.url))
   }
 
-  // For API routes, return 401 if no token
-  if (isApiAdminRoute && !token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
+  try {
+    // Verify the token
+    const secret = process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production"
+    const decoded = verify(token, secret) as any
 
-  // If there's a token, verify it
-  if (token && (isAdminRoute || isApiAdminRoute)) {
-    try {
-      const decoded = verify(token, process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production") as any
-
-      // Check if user is admin for admin routes
-      if ((isAdminRoute || isApiAdminRoute) && decoded.role !== "admin") {
-        if (isApiAdminRoute) {
-          return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-        } else {
-          return NextResponse.redirect(new URL("/", request.url))
-        }
-      }
-    } catch (error) {
-      // If token is invalid, redirect to login
-      if (isApiAdminRoute) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      } else {
-        const url = new URL("/login", request.url)
-        url.searchParams.set("callbackUrl", path)
-        return NextResponse.redirect(url)
-      }
+    // Check if user is admin
+    if (decoded.role !== "admin") {
+      // Redirect to dashboard if user is not admin
+      return NextResponse.redirect(new URL("/dashboard", request.url))
     }
-  }
 
-  return NextResponse.next()
+    // Continue to admin page if user is admin
+    return NextResponse.next()
+  } catch (error) {
+    // Redirect to login page if token is invalid
+    return NextResponse.redirect(new URL("/login", request.url))
+  }
 }
 
-// Configure the middleware to run only on specific paths
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*", "/dashboard/:path*"],
+  matcher: ["/admin/:path*"],
 }

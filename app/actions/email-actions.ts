@@ -11,6 +11,36 @@ const transporter = nodemailer.createTransport({
   },
 })
 
+// Generic email sending function
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  from = process.env.EMAIL_USER || "niosdiscussion@gmail.com",
+  attachments = [],
+}: {
+  to: string | string[]
+  subject: string
+  html: string
+  from?: string
+  attachments?: any[]
+}) {
+  try {
+    await transporter.sendMail({
+      from,
+      to,
+      subject,
+      html,
+      attachments,
+    })
+
+    return { success: true, message: "Email sent successfully" }
+  } catch (error) {
+    console.error("Error sending email:", error)
+    return { success: false, message: "Failed to send email" }
+  }
+}
+
 export async function sendAdmissionFormEmail(formData: any) {
   try {
     // Format the form data for email
@@ -18,9 +48,8 @@ export async function sendAdmissionFormEmail(formData: any) {
       .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
       .join("<br>")
 
-    // Send email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER || "niosdiscussion@gmail.com",
+    // Send email using the generic function
+    return await sendEmail({
       to: "niosdiscussion@gmail.com",
       subject: "New Admission Form Submission",
       html: `
@@ -28,10 +57,7 @@ export async function sendAdmissionFormEmail(formData: any) {
         <p>A new admission form has been submitted with the following details:</p>
         <div>${formattedData}</div>
       `,
-      // Attachments would be handled here for document uploads
     })
-
-    return { success: true, message: "Form submitted successfully" }
   } catch (error) {
     console.error("Error sending email:", error)
     return { success: false, message: "Failed to submit form" }
@@ -42,9 +68,8 @@ export async function sendContactFormEmail(formData: any) {
   try {
     const { name, email, phone, subject, message } = formData
 
-    // Send email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER || "niosdiscussion@gmail.com",
+    // Send email using the generic function
+    return await sendEmail({
       to: "niosdiscussion@gmail.com",
       subject: `Contact Form: ${subject}`,
       html: `
@@ -57,8 +82,6 @@ export async function sendContactFormEmail(formData: any) {
         <p>${message}</p>
       `,
     })
-
-    return { success: true, message: "Message sent successfully" }
   } catch (error) {
     console.error("Error sending email:", error)
     return { success: false, message: "Failed to send message" }
@@ -74,9 +97,8 @@ export async function sendOrderConfirmationEmail(orderData: any) {
       .map((item: any) => `<li>${item.title} - ₹${item.price} x ${item.quantity}</li>`)
       .join("")
 
-    // Send email to customer
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER || "niosdiscussion@gmail.com",
+    // Send email to customer using the generic function
+    await sendEmail({
       to: customerEmail,
       subject: "Your ODL Order Confirmation",
       html: `
@@ -89,9 +111,8 @@ export async function sendOrderConfirmationEmail(orderData: any) {
       `,
     })
 
-    // Send notification to admin
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER || "niosdiscussion@gmail.com",
+    // Send notification to admin using the generic function
+    return await sendEmail({
       to: "niosdiscussion@gmail.com",
       subject: "New Study Material Order",
       html: `
@@ -102,8 +123,6 @@ export async function sendOrderConfirmationEmail(orderData: any) {
         <p><strong>Total Amount:</strong> ₹${totalAmount}</p>
       `,
     })
-
-    return { success: true, message: "Order confirmation sent" }
   } catch (error) {
     console.error("Error sending email:", error)
     return { success: false, message: "Failed to send order confirmation" }
